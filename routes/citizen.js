@@ -1,0 +1,348 @@
+const express = require("express");
+const router = express.Router();
+
+const Patient = require("../models/Patient");
+const Hospital = require("../models/Hospital");
+const Doctor = require("../models/Doctor");
+const Medicine = require("../models/Medicine");
+const Equipment = require("../models/Equipment");
+const Appointment = require("../models/Appointment");
+
+const { ensureCitizen } = require("../middleware/auth");
+
+// =====================================================
+// CITIZEN DASHBOARD - Smart Public Health Portal
+// =====================================================
+
+router.get("/dashboard", ensureCitizen, async (req, res) => {
+  try {
+    // Fetch all hospitals with their data
+    const hospitals = await Hospital.find();
+    const patients = await Patient.find().populate("hospital").populate("doctor");
+    const doctors = await Doctor.find().populate("hospital");
+    const medicines = await Medicine.find().populate("hospital");
+    const equipments = await Equipment.find().populate("hospital");
+
+    // ================= KPI CALCULATIONS =================
+    
+    // Active Outbreaks (diseases with > 10 cases in last 30 days)
+    const thirtyDaysAgo = new Date();
+    thirtyDaysAgo.setDate(thirtyDaysAgo.getDate() - 30);
+    
+    const recentPatients = patients.filter(p => 
+      p.admissionDate && new Date(p.admissionDate) >= thirtyDaysAgo
+    );
+
+    // Disease aggregation
+    const diseaseCount = {};
+    recentPatients.forEach(p => {
+      if (p.disease) {
+        diseaseCount[p.disease] = (diseaseCount[p.disease] || 0) + 1;
+      }
+    });
+
+    const outbreaks = Object.entries(diseaseCount)
+      .filter(([disease, count]) => count >= 5)
+      .map(([disease, count]) => ({ disease, count }));
+
+    // Total bed calculations
+    let totalBeds = 0;
+    let availableBeds = 0;
+    let generalBeds = { total: 0, available: 0 };
+    let icuBeds = { total: 0, available: 0 };
+    let isolationBeds = { total: 0, available: 0 };
+
+    hospitals.forEach(h => {
+      if (h.beds) {
+        generalBeds.total += h.beds.general?.total || 0;
+        generalBeds.available += h.beds.general?.available || 0;
+        icuBeds.total += h.beds.icu?.total || 0;
+        icuBeds.available += h.beds.icu?.available || 0;
+        isolationBeds.total += h.beds.isolation?.total || 0;
+        isolationBeds.available += h.beds.isolation?.available || 0;
+        
+        totalBeds += (h.beds.general?.total || 0) + (h.beds.icu?.total || 0) + (h.beds.isolation?.total || 0);
+        availableBeds += (h.beds.general?.available || 0) + (h.beds.icu?.available || 0) + (h.beds.isolation?.available || 0);
+      }
+    });
+
+    const bedOccupancyPercent = totalBeds > 0 ? Math.round(((totalBeds - availableBeds) / totalBeds) * 100) : 0;
+
+    // Medicine stock alerts
+    const lowStockMedicines = medicines.filter(m => m.status === "low" || m.status === "out_of_stock");
+    const criticalMedicineAlerts = lowStockMedicines.length;
+
+    // Equipment status
+    const workingEquipment = equipments.filter(e => e.condition === "working").length;
+    const maintenanceEquipment = equipments.filter(e => e.condition === "maintenance").length;
+    const outOfOrderEquipment = equipments.filter(e => e.condition === "out_of_order").length;
+
+    // Emergency status calculation
+    const emergencyStatus = bedOccupancyPercent >= 80 || criticalMedicineAlerts > 5 ? "Critical" : "Normal";
+
+    // ================= WARD-WISE DATA =================
+    const wardData = {};
+    hospitals.forEach(h => {
+      if (!wardData[h.ward]) {
+        wardData[h.ward] = {
+          hospitals: 0,
+          totalBeds: 0,
+          availableBeds: 0,
+          patients: 0,
+          doctors: 0
+        };
+      }
+      wardData[h.ward].hospitals++;
+      wardData[h.ward].totalBeds += (h.beds?.general?.total || 0) + (h.beds?.icu?.total || 0) + (h.beds?.isolation?.total || 0);
+      wardData[h.ward].availableBeds += (h.beds?.general?.available || 0) + (h.beds?.icu?.available || 0) + (h.beds?.isolation?.available || 0);
+    });
+
+    patients.forEach(p => {
+      if (p.hospital && p.hospital.ward && wardData[p.hospital.ward]) {
+        wardData[p.hospital.ward].patients++;
+      }
+    });
+
+    doctors.forEach(d => {
+      const hospital = hospitals.find(h => h._id.toString() === d.hospital?.toString());
+      if (hospital && wardData[hospital.ward]) {
+        wardData[hospital.ward].doctors++;
+      }
+    });
+
+    // ================= DISEASE TRENDS =================
+    const diseaseTrends = Object.entries(diseaseCount)
+      .sort((a, b) => b[1] - a[1])
+      .slice(0, 10)
+      .map(([disease, count]) => ({ disease, count }));
+
+    // ================= HOSPITAL STATS =================
+    const hospitalStats = hospitals.map(h => {
+      const hPatients = patients.filter(p => p.hospital?._id?.toString() === h._id.toString());
+      const hDoctors = doctors.filter(d => d.hospital?.toString() === h._id.toString());
+      const hMedicines = medicines.filter(m => m.hospital?.toString() === h._id.toString());
+      
+      const hTotalBeds = (h.beds?.general?.total || 0) + (h.beds?.icu?.total || 0) + (h.beds?.isolation?.total || 0);
+      const hAvailableBeds = (h.beds?.general?.available || 0) + (h.beds?.icu?.available || 0) + (h.beds?.isolation?.available || 0);
+      
+      return {
+        _id: h._id,
+        name: h.hospitalName,
+        ward: h.ward,
+        totalBeds: hTotalBeds,
+        availableBeds: hAvailableBeds,
+        occupancyPercent: hTotalBeds > 0 ? Math.round(((hTotalBeds - hAvailableBeds) / hTotalBeds) * 100) : 0,
+        totalPatients: hPatients.length,
+        totalDoctors: hDoctors.length,
+        lowStockMedicines: hMedicines.filter(m => m.status !== "adequate").length
+      };
+    });
+
+    // ================= RENDER DASHBOARD =================
+    res.render("dashboards/citizen", {
+      user: req.user,
+      
+      // KPIs
+      kpis: {
+        activeOutbreaks: outbreaks.length,
+        bedOccupancyPercent,
+        criticalMedicineAlerts,
+        emergencyStatus,
+        totalHospitals: hospitals.length,
+        totalDoctors: doctors.length,
+        totalPatients: patients.length
+      },
+
+      // Bed data
+      beds: {
+        total: totalBeds,
+        available: availableBeds,
+        general: generalBeds,
+        icu: icuBeds,
+        isolation: isolationBeds
+      },
+
+      // Lists
+      outbreaks,
+      diseaseTrends,
+      wardData,
+      hospitalStats,
+      lowStockMedicines,
+
+      // Equipment
+      equipment: {
+        working: workingEquipment,
+        maintenance: maintenanceEquipment,
+        outOfOrder: outOfOrderEquipment,
+        total: equipments.length
+      },
+
+      // Raw data for charts
+      hospitals,
+      recentPatients
+    });
+
+  } catch (err) {
+    console.error("Citizen Dashboard Error:", err);
+    res.status(500).send("Error loading dashboard");
+  }
+});
+
+// =====================================================
+// API ENDPOINTS FOR CITIZEN DASHBOARD
+// =====================================================
+
+// Get hospital details
+router.get("/hospital/:id", ensureCitizen, async (req, res) => {
+  try {
+    const hospital = await Hospital.findById(req.params.id);
+    const doctors = await Doctor.find({ hospital: hospital._id });
+    const medicines = await Medicine.find({ hospital: hospital._id });
+    const equipments = await Equipment.find({ hospital: hospital._id });
+
+    res.json({
+      hospital,
+      doctors,
+      medicines,
+      equipments
+    });
+  } catch (err) {
+    res.status(500).json({ error: "Error fetching hospital data" });
+  }
+});
+
+// Search hospitals
+router.get("/search", ensureCitizen, async (req, res) => {
+  try {
+    const { ward, specialty, hasAvailableBeds } = req.query;
+    let query = {};
+
+    if (ward) {
+      query.ward = ward;
+    }
+
+    let hospitals = await Hospital.find(query);
+
+    if (hasAvailableBeds === "true") {
+      hospitals = hospitals.filter(h => {
+        const available = (h.beds?.general?.available || 0) + 
+                         (h.beds?.icu?.available || 0) + 
+                         (h.beds?.isolation?.available || 0);
+        return available > 0;
+      });
+    }
+
+    res.json(hospitals);
+  } catch (err) {
+    res.status(500).json({ error: "Search failed" });
+  }
+});
+
+// Get ward statistics
+router.get("/ward/:wardName", ensureCitizen, async (req, res) => {
+  try {
+    const hospitals = await Hospital.find({ ward: req.params.wardName });
+    const hospitalIds = hospitals.map(h => h._id);
+    
+    const patients = await Patient.find({ hospital: { $in: hospitalIds } });
+    const doctors = await Doctor.find({ hospital: { $in: hospitalIds } });
+
+    res.json({
+      hospitals,
+      totalPatients: patients.length,
+      totalDoctors: doctors.length
+    });
+  } catch (err) {
+    res.status(500).json({ error: "Error fetching ward data" });
+  }
+});
+
+// =====================================================
+// APPOINTMENT BOOKING APIS
+// =====================================================
+
+// Get doctors for a hospital (for appointment booking)
+router.get("/hospital/:id/doctors", ensureCitizen, async (req, res) => {
+  try {
+    const doctors = await Doctor.find({ 
+      hospital: req.params.id,
+      isAvailable: true 
+    });
+    res.json(doctors);
+  } catch (err) {
+    res.status(500).json({ error: "Error fetching doctors" });
+  }
+});
+
+// Book an appointment
+router.post("/appointment", ensureCitizen, async (req, res) => {
+  try {
+    const {
+      hospitalId,
+      doctorId,
+      patientName,
+      patientAge,
+      patientGender,
+      patientPhone,
+      appointmentDate,
+      appointmentTime,
+      reason
+    } = req.body;
+
+    const appointment = await Appointment.create({
+      hospital: hospitalId,
+      doctor: doctorId,
+      citizen: req.user._id,
+      patientName,
+      patientAge,
+      patientGender,
+      patientPhone,
+      appointmentDate: new Date(appointmentDate),
+      appointmentTime,
+      reason,
+      status: "pending"
+    });
+
+    res.json({ success: true, appointment });
+  } catch (err) {
+    console.error("Appointment booking error:", err);
+    res.status(500).json({ error: "Failed to book appointment" });
+  }
+});
+
+// Get user's appointments
+router.get("/my-appointments", ensureCitizen, async (req, res) => {
+  try {
+    const appointments = await Appointment.find({ citizen: req.user._id })
+      .populate("hospital")
+      .populate("doctor")
+      .sort({ appointmentDate: -1 });
+    
+    res.json(appointments);
+  } catch (err) {
+    res.status(500).json({ error: "Error fetching appointments" });
+  }
+});
+
+// Cancel appointment
+router.post("/appointment/:id/cancel", ensureCitizen, async (req, res) => {
+  try {
+    const appointment = await Appointment.findOne({
+      _id: req.params.id,
+      citizen: req.user._id
+    });
+
+    if (!appointment) {
+      return res.status(404).json({ error: "Appointment not found" });
+    }
+
+    appointment.status = "cancelled";
+    await appointment.save();
+
+    res.json({ success: true });
+  } catch (err) {
+    res.status(500).json({ error: "Error cancelling appointment" });
+  }
+});
+
+module.exports = router;
