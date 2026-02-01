@@ -7,6 +7,7 @@ const Doctor = require("../models/Doctor");
 const Medicine = require("../models/Medicine");
 const Equipment = require("../models/Equipment");
 const Appointment = require("../models/Appointment");
+const User = require("../models/User");
 
 const { ensureCitizen } = require("../middleware/auth");
 
@@ -22,6 +23,7 @@ router.get("/dashboard", ensureCitizen, async (req, res) => {
     const doctors = await Doctor.find().populate("hospital");
     const medicines = await Medicine.find().populate("hospital");
     const equipments = await Equipment.find().populate("hospital");
+    const users = await User.find();
 
     // ================= KPI CALCULATIONS =================
     
@@ -79,6 +81,26 @@ router.get("/dashboard", ensureCitizen, async (req, res) => {
 
     // Emergency status calculation
     const emergencyStatus = bedOccupancyPercent >= 80 || criticalMedicineAlerts > 5 ? "Critical" : "Normal";
+
+    // Active Patients (current IPD patients)
+    const activePatients = patients.filter(p => 
+      p.patientType === "IPD" && !p.dischargeDate
+    );
+
+    // Calculate vaccination programs based on available data
+    // Count unique vaccination types from patient records or set based on government programs
+    const govVaccinationPrograms = [
+      "COVID-19", "Polio", "Hepatitis B", "Tetanus", "MMR", "DPT"
+    ];
+    const activeVaccinationPrograms = govVaccinationPrograms.length;
+
+    // Total users breakdown
+    const userStats = {
+      total: users.length,
+      citizens: users.filter(u => u.role === "citizen").length,
+      hospitals: users.filter(u => u.role === "hospital").length,
+      admin: users.filter(u => u.role === "admin").length
+    };
 
     // ================= WARD-WISE DATA =================
     const wardData = {};
@@ -150,7 +172,11 @@ router.get("/dashboard", ensureCitizen, async (req, res) => {
         emergencyStatus,
         totalHospitals: hospitals.length,
         totalDoctors: doctors.length,
-        totalPatients: patients.length
+        totalPatients: patients.length,
+        activePatients: activePatients.length,
+        activeVaccinationPrograms,
+        totalUsers: userStats.total,
+        citizenUsers: userStats.citizens
       },
 
       // Bed data
