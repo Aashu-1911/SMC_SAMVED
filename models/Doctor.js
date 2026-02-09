@@ -7,14 +7,26 @@ const DoctorSchema = new mongoose.Schema({
     required: true,
   },
 
-  name: String,
+  name: {
+    type: String,
+    required: true,
+  },
+
   specialization: String,
+
   opdTimings: String,
 
-  // 🔥 NEW
+  phone: {
+    type: String,   // 👈 ADD THIS
+  },
+
+  experienceYears: {
+    type: Number,   // optional but useful
+  },
+
   isAvailable: {
     type: Boolean,
-    default: true, // doctor is available by default
+    default: true,
   },
 });
 
