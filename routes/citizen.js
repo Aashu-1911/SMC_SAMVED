@@ -119,6 +119,154 @@ router.post(
 router.delete("/profile", ensureCitizen, citizenController.deleteProfile);
 
 // =====================================================
+// PROGRAM ROUTES - Health Programs & Applications
+// =====================================================
+
+const ProgramApplication = require("../models/ProgramApplication");
+
+/**
+ * GET /citizen/programs
+ * Display all available health programs and user's applied programs
+ */
+router.get("/programs", ensureCitizen, async (req, res) => {
+  try {
+    const programs = await Program.find({ status: 'active' }).sort({ createdAt: -1 });
+    const citizen = await Citizen.findOne({ userId: req.user._id });
+    
+    // Fetch user's applied programs with program details
+    const appliedPrograms = await ProgramApplication.find({ userId: req.user._id })
+      .populate('program')
+      .sort({ applicationDate: -1 });
+    
+    res.render("citizen/programs", {
+      user: req.user,
+      citizen,
+      programs,
+      appliedPrograms
+    });
+  } catch (error) {
+    console.error("❌ Error loading programs:", error);
+    res.redirect("/citizen/dashboard");
+  }
+});
+
+/**
+ * GET /citizen/program-apply/:id
+ * Display application form for a specific program
+ */
+router.get("/program-apply/:id", ensureCitizen, async (req, res) => {
+  try {
+    const program = await Program.findById(req.params.id);
+    const citizen = await Citizen.findOne({ userId: req.user._id });
+    
+    if (!program) {
+      return res.redirect("/citizen/programs");
+    }
+    
+    // Check if already applied
+    const existingApplication = await ProgramApplication.findOne({
+      program: program._id,
+      userId: req.user._id
+    });
+    
+    res.render("citizen/program-application", {
+      user: req.user,
+      citizen,
+      program,
+      existingApplication
+    });
+  } catch (error) {
+    console.error("❌ Error loading application form:", error);
+    res.redirect("/citizen/programs");
+  }
+});
+
+/**
+ * POST /citizen/program-apply
+ * Submit program application
+ */
+router.post("/program-apply", ensureCitizen, async (req, res) => {
+  try {
+    const citizen = await Citizen.findOne({ userId: req.user._id });
+    
+    if (!citizen) {
+      return res.status(400).json({ 
+        success: false, 
+        error: "Please complete your profile first" 
+      });
+    }
+    
+    // Check if already applied for this program
+    const existingApplication = await ProgramApplication.findOne({
+      program: req.body.programId,
+      userId: req.user._id
+    });
+    
+    if (existingApplication) {
+      return res.status(400).json({
+        success: false,
+        error: "You have already applied for this program"
+      });
+    }
+    
+    // Calculate age from date of birth
+    const dob = new Date(req.body.dateOfBirth);
+    const age = Math.floor((Date.now() - dob.getTime()) / (365.25 * 24 * 60 * 60 * 1000));
+    
+    // Create application
+    const application = new ProgramApplication({
+      program: req.body.programId,
+      citizen: citizen._id,
+      userId: req.user._id,
+      fullName: req.body.fullName,
+      dateOfBirth: req.body.dateOfBirth,
+      age: age,
+      gender: req.body.gender,
+      mobileNumber: req.body.mobileNumber,
+      email: req.body.email,
+      address: {
+        street: req.body.street,
+        area: req.body.area,
+        ward: req.body.ward,
+        pincode: req.body.pincode
+      },
+      aadharNumber: req.body.aadharNumber,
+      bloodGroup: req.body.bloodGroup,
+      medicalHistory: req.body.medicalHistory,
+      allergies: req.body.allergies,
+      currentMedications: req.body.currentMedications,
+      previousVaccinations: req.body.previousVaccinations,
+      preferredCenter: req.body.preferredCenter,
+      preferredDate: req.body.preferredDate,
+      emergencyContact: {
+        name: req.body.emergencyContactName,
+        relation: req.body.emergencyContactRelation,
+        phone: req.body.emergencyContactPhone
+      }
+    });
+    
+    await application.save();
+    
+    // Update program enrolled count
+    await Program.findByIdAndUpdate(req.body.programId, {
+      $inc: { enrolled: 1 }
+    });
+    
+    res.json({ 
+      success: true, 
+      message: "Application submitted successfully!",
+      applicationId: application._id
+    });
+  } catch (error) {
+    console.error("❌ Error submitting application:", error);
+    res.status(500).json({ 
+      success: false, 
+      error: "Failed to submit application. Please try again." 
+    });
+  }
+});
+
+// =====================================================
 // CITIZEN DASHBOARD - Smart Public Health Portal
 // =====================================================
 

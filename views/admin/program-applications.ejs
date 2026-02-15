@@ -1,0 +1,160 @@
+<!-- Header -->
+<div class="mb-6">
+    <h2 class="text-2xl font-bold text-slate-800"><%= program.name %></h2>
+    <p class="text-slate-600">Review and manage program applications</p>
+</div>
+
+<!-- Program Summary Card -->
+    <div class="mb-6 bg-white rounded-2xl shadow-sm border border-slate-200 overflow-hidden">
+        <div class="p-6 bg-gradient-to-r from-<%= program.gradientColors.from %> to-<%= program.gradientColors.to %>">
+            <div class="flex items-center justify-between text-white">
+                <div>
+                    <h2 class="text-2xl font-bold mb-2"><%= program.name %></h2>
+                    <p class="text-white/90"><%= program.description %></p>
+                    <p class="text-sm text-white/80 mt-2">
+                        <%= new Date(program.startDate).toLocaleDateString() %> - <%= new Date(program.endDate).toLocaleDateString() %>
+                    </p>
+                </div>
+                <div class="text-right">
+                    <div class="text-4xl font-bold"><%= applications.length %></div>
+                    <div class="text-sm text-white/90">Total Applications</div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Statistics Cards -->
+    <div class="grid grid-cols-1 md:grid-cols-4 gap-6 mb-8">
+        <div class="bg-white rounded-xl shadow-sm border border-slate-200 p-6">
+            <div class="flex items-center gap-4">
+                <div class="p-3 bg-yellow-100 rounded-lg">
+                    <svg class="w-8 h-8 text-yellow-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 8v4l3 3m6-3a9 9 0 11-18 0 9 9 0 0118 0z"></path>
+                    </svg>
+                </div>
+                <div>
+                    <div class="text-2xl font-bold text-slate-800"><%= applications.filter(a => a.status === 'pending').length %></div>
+                    <div class="text-sm text-slate-600">Pending</div>
+                </div>
+            </div>
+        </div>
+
+        <div class="bg-white rounded-xl shadow-sm border border-slate-200 p-6">
+            <div class="flex items-center gap-4">
+                <div class="p-3 bg-green-100 rounded-lg">
+                    <svg class="w-8 h-8 text-green-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z"></path>
+                    </svg>
+                </div>
+                <div>
+                    <div class="text-2xl font-bold text-slate-800"><%= applications.filter(a => a.status === 'approved').length %></div>
+                    <div class="text-sm text-slate-600">Approved</div>
+                </div>
+            </div>
+        </div>
+
+        <div class="bg-white rounded-xl shadow-sm border border-slate-200 p-6">
+            <div class="flex items-center gap-4">
+                <div class="p-3 bg-red-100 rounded-lg">
+                    <svg class="w-8 h-8 text-red-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12"></path>
+                    </svg>
+                </div>
+                <div>
+                    <div class="text-2xl font-bold text-slate-800"><%= applications.filter(a => a.status === 'rejected').length %></div>
+                    <div class="text-sm text-slate-600">Rejected</div>
+                </div>
+            </div>
+        </div>
+
+        <div class="bg-white rounded-xl shadow-sm border border-slate-200 p-6">
+            <div class="flex items-center gap-4">
+                <div class="p-3 bg-blue-100 rounded-lg">
+                    <svg class="w-8 h-8 text-blue-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z"></path>
+                    </svg>
+                </div>
+                <div>
+                    <div class="text-2xl font-bold text-slate-800"><%= applications.filter(a => a.status === 'completed').length %></div>
+                    <div class="text-sm text-slate-600">Completed</div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Applications List -->
+    <div class="bg-white rounded-2xl shadow-sm border border-slate-200 overflow-hidden">
+        <div class="p-6 border-b border-slate-200 bg-gradient-to-r from-slate-50 to-slate-100">
+            <h2 class="text-xl font-bold text-slate-800">All Applications</h2>
+            <p class="text-sm text-slate-600 mt-1">Click on an application to view full details</p>
+        </div>
+
+        <div class="overflow-x-auto">
+            <% if (applications && applications.length > 0) { %>
+            <table class="w-full">
+                <thead class="bg-slate-50 border-b border-slate-200">
+                    <tr>
+                        <th class="px-6 py-4 text-left text-xs font-semibold text-slate-700 uppercase tracking-wider">Applicant</th>
+                        <th class="px-6 py-4 text-left text-xs font-semibold text-slate-700 uppercase tracking-wider">Contact</th>
+                        <th class="px-6 py-4 text-left text-xs font-semibold text-slate-700 uppercase tracking-wider">Age/Gender</th>
+                        <th class="px-6 py-4 text-left text-xs font-semibold text-slate-700 uppercase tracking-wider">Ward</th>
+                        <th class="px-6 py-4 text-left text-xs font-semibold text-slate-700 uppercase tracking-wider">Applied On</th>
+                        <th class="px-6 py-4 text-left text-xs font-semibold text-slate-700 uppercase tracking-wider">Status</th>
+                        <th class="px-6 py-4 text-left text-xs font-semibold text-slate-700 uppercase tracking-wider">Actions</th>
+                    </tr>
+                </thead>
+                <tbody class="divide-y divide-slate-200">
+                    <% applications.forEach((app, index) => { %>
+                    <tr class="hover:bg-slate-50 transition-colors">
+                        <td class="px-6 py-4">
+                            <div class="font-medium text-slate-800"><%= app.fullName %></div>
+                        </td>
+                        <td class="px-6 py-4">
+                            <div class="text-sm text-slate-600"><%= app.mobileNumber %></div>
+                            <% if (app.email) { %>
+                            <div class="text-xs text-slate-500"><%= app.email %></div>
+                            <% } %>
+                        </td>
+                        <td class="px-6 py-4 text-sm text-slate-600">
+                            <%= app.age %> yrs / <%= app.gender %>
+                        </td>
+                        <td class="px-6 py-4 text-sm text-slate-600">
+                            <%= app.address.ward %>
+                        </td>
+                        <td class="px-6 py-4 text-sm text-slate-600">
+                            <%= new Date(app.applicationDate).toLocaleDateString() %>
+                        </td>
+                        <td class="px-6 py-4">
+                            <% if (app.status === 'pending') { %>
+                            <span class="px-3 py-1 text-xs font-semibold rounded-full bg-yellow-100 text-yellow-700">Pending</span>
+                            <% } else if (app.status === 'approved') { %>
+                            <span class="px-3 py-1 text-xs font-semibold rounded-full bg-green-100 text-green-700">Approved</span>
+                            <% } else if (app.status === 'rejected') { %>
+                            <span class="px-3 py-1 text-xs font-semibold rounded-full bg-red-100 text-red-700">Rejected</span>
+                            <% } else if (app.status === 'completed') { %>
+                            <span class="px-3 py-1 text-xs font-semibold rounded-full bg-blue-100 text-blue-700">Completed</span>
+                            <% } %>
+                        </td>
+                        <td class="px-6 py-4">
+                            <a 
+                                href="/admin/programs/<%= program._id %>/applications/<%= app._id %>" 
+                                class="text-blue-600 hover:text-blue-800 font-medium text-sm"
+                            >
+                                View Details →
+                            </a>
+                        </td>
+                    </tr>
+                    <% }); %>
+                </tbody>
+            </table>
+            <% } else { %>
+            <div class="text-center py-12">
+                <svg class="w-16 h-16 mx-auto text-slate-300 mb-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12h6m-6 4h6m2 5H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z"></path>
+                </svg>
+                <p class="text-slate-600 font-medium">No applications received yet</p>
+                <p class="text-sm text-slate-500 mt-2">Applications will appear here once citizens start applying</p>
+            </div>
+            <% } %>
+        </div>
+    </div>

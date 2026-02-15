@@ -115,8 +115,28 @@
                 </div>
 
                 <div class="sm:col-span-2">
-                  <label class="block text-xs font-bold text-slate-500 uppercase mb-1">Ward / Zone</label>
-                  <input name="ward" type="text" class="block w-full border-slate-300 rounded-md shadow-sm focus:ring-brand-500 focus:border-brand-500 sm:text-sm">
+                  <label class="block text-xs font-bold text-slate-500 uppercase mb-1">Zone</label>
+                  <select id="zoneSelect" name="zone" class="block w-full border-slate-300 rounded-md shadow-sm focus:ring-brand-500 focus:border-brand-500 sm:text-sm">
+                    <option value="">Select Zone</option>
+                    <option value="Central / Old City Zone">Central / Old City Zone</option>
+                    <option value="Central Residential Zone">Central Residential Zone</option>
+                    <option value="North Solapur Zone">North Solapur Zone</option>
+                    <option value="East Solapur / Industrial Zone">East Solapur / Industrial Zone</option>
+                    <option value="South & South-West Zone">South & South-West Zone</option>
+                    <option value="West / Peripheral Development Zone">West / Peripheral Development Zone</option>
+                  </select>
+                </div>
+
+                <div class="sm:col-span-3">
+                  <label class="block text-xs font-bold text-slate-500 uppercase mb-1">Local Area</label>
+                  <select id="localAreaSelect" name="localArea" class="block w-full border-slate-300 rounded-md shadow-sm focus:ring-brand-500 focus:border-brand-500 sm:text-sm" disabled>
+                    <option value="">Select Zone First</option>
+                  </select>
+                </div>
+
+                <div class="sm:col-span-3">
+                  <label class="block text-xs font-bold text-slate-500 uppercase mb-1">Ward</label>
+                  <input name="ward" type="text" class="block w-full border-slate-300 rounded-md shadow-sm focus:ring-brand-500 focus:border-brand-500 sm:text-sm" placeholder="e.g., Ward 5">
                 </div>
 
                 <div class="sm:col-span-6">
@@ -229,6 +249,88 @@
     }
 
     roleSelect.addEventListener("change", toggleHospitalFields);
+
+    // Zone and Local Area mapping
+    const localAreasByZone = {
+      'Central / Old City Zone': [
+        'Solapur City (Core)',
+        'Mangalwar Peth',
+        'Budhwar Peth',
+        'Shukrawar Peth',
+        'Kasba Solapur',
+        'Navi Peth',
+        'Siddheshwar Peth',
+        'Murarji Peth',
+        'Goldfinch Peth'
+      ],
+      'Central Residential Zone': [
+        'Railway Lines Area',
+        'Saat Rasta Area',
+        'Lashkar',
+        'Ujani Colony',
+        'Sakhar Peth',
+        'Begum Peth'
+      ],
+      'North Solapur Zone': [
+        'Ashok Chowk',
+        'Akkalkot Road Area',
+        'Bale',
+        'Degaon',
+        'Hipparga',
+        'Boramani'
+      ],
+      'East Solapur / Industrial Zone': [
+        'MIDC Solapur',
+        'Hotgi Road Area',
+        'Konark Nagar',
+        'Datta Nagar',
+        'Saat Rasta East',
+        'Railway Goods Yard Area'
+      ],
+      'South & South-West Zone': [
+        'Vijapur Road Area',
+        'Jule Solapur',
+        'Jule MIDC',
+        'Walchand Nagar',
+        'Majrewadi',
+        'Kegaon'
+      ],
+      'West / Peripheral Development Zone': [
+        'Kumbhari',
+        'Shelgi',
+        'Dhotri',
+        'Antrolikar Nagar',
+        'Sainath Nagar'
+      ]
+    };
+
+    const zoneSelect = document.getElementById('zoneSelect');
+    const localAreaSelect = document.getElementById('localAreaSelect');
+
+    if (zoneSelect && localAreaSelect) {
+      zoneSelect.addEventListener('change', function() {
+        const selectedZone = this.value;
+        
+        // Clear existing options
+        localAreaSelect.innerHTML = '<option value="">Select Local Area</option>';
+        
+        if (selectedZone && localAreasByZone[selectedZone]) {
+          // Enable and populate local area dropdown
+          localAreaSelect.disabled = false;
+          
+          localAreasByZone[selectedZone].forEach(area => {
+            const option = document.createElement('option');
+            option.value = area;
+            option.textContent = area;
+            localAreaSelect.appendChild(option);
+          });
+        } else {
+          // Disable if no zone selected
+          localAreaSelect.disabled = true;
+          localAreaSelect.innerHTML = '<option value="">Select Zone First</option>';
+        }
+      });
+    }
   </script>
 
 </body>

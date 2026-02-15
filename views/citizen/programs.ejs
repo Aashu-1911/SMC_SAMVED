@@ -1,3 +1,30 @@
+<!DOCTYPE html>
+<html lang="en" class="h-full bg-slate-50 antialiased">
+<head>
+  <meta charset="UTF-8">
+  <title>Health Programs | SMC Smart Health</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+  
+  <script src="https://cdn.tailwindcss.com"></script>
+  <script>
+    tailwind.config = {
+      theme: {
+        extend: {
+          fontFamily: { sans: ['Inter', 'sans-serif'] },
+          colors: {
+            brand: { 50: '#ecfdf5', 100: '#d1fae5', 500: '#10b981', 600: '#059669', 700: '#047857', 900: '#064e3b' }
+          }
+        }
+      }
+    }
+  </script>
+</head>
+
+<body class="antialiased">
 <div class="min-h-screen bg-gradient-to-br from-blue-50 via-white to-purple-50 py-8 px-4">
     <div class="max-w-7xl mx-auto">
         
@@ -17,7 +44,7 @@
                         </svg>
                     </div>
                     <div>
-                        <div class="text-3xl font-bold text-slate-800">3</div>
+                        <div class="text-3xl font-bold text-slate-800"><%= programs ? programs.length : 0 %></div>
                         <div class="text-sm text-slate-600">Active Programs</div>
                     </div>
                 </div>
@@ -62,177 +89,83 @@
 
         <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6 mb-12">
             
-            <!-- Program 1: COVID-19 Vaccination Drive -->
-            <a href="/citizen/program-apply/1" class="group block">
-                <div class="bg-white rounded-xl overflow-hidden shadow-sm border border-slate-200 hover:shadow-xl transition-all">
-                    <div class="relative h-48 bg-gradient-to-br from-blue-600 via-blue-500 to-cyan-500 overflow-hidden">
-                        <div class="absolute inset-0 flex items-center justify-center text-white">
-                            <div class="text-center px-6">
-                                <svg class="w-16 h-16 mx-auto mb-3 opacity-90" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12l2 2 4-4m5.618-4.016A11.955 11.955 0 0112 2.944a11.955 11.955 0 01-8.618 3.04A12.02 12.02 0 003 9c0 5.591 3.824 10.29 9 11.622 5.176-1.332 9-6.03 9-11.622 0-1.042-.133-2.052-.382-3.016z"></path>
-                                </svg>
-                                <h3 class="text-2xl font-bold mb-1">COVID-19</h3>
-                                <h4 class="text-lg font-semibold text-white/90">Vaccination Drive</h4>
+            <% if (programs && programs.length > 0) { %>
+                <% programs.forEach((program) => { %>
+                <!-- <%= program.name %> -->
+                <a href="/citizen/program-apply/<%= program._id %>" class="group block">
+                    <div class="bg-white rounded-xl overflow-hidden shadow-sm border border-slate-200 hover:shadow-xl transition-all">
+                        <div class="relative h-48 bg-gradient-to-br from-<%= program.gradientColors.from %> to-<%= program.gradientColors.to %> overflow-hidden">
+                            <div class="absolute inset-0 flex items-center justify-center text-white">
+                                <div class="text-center px-6">
+                                    <svg class="w-16 h-16 mx-auto mb-3 opacity-90" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                        <% if (program.type === 'vaccination') { %>
+                                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12l2 2 4-4m5.618-4.016A11.955 11.955 0 0112 2.944a11.955 11.955 0 01-8.618 3.04A12.02 12.02 0 003 9c0 5.591 3.824 10.29 9 11.622 5.176-1.332 9-6.03 9-11.622 0-1.042-.133-2.052-.382-3.016z"></path>
+                                        <% } else if (program.type === 'health_camp') { %>
+                                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5H7a2 2 0 00-2 2v12a2 2 0 002 2h10a2 2 0 002-2V7a2 2 0 00-2-2h-2M9 5a2 2 0 002 2h2a2 2 0 002-2M9 5a2 2 0 012-2h2a2 2 0 012 2m-6 9l2 2 4-4"></path>
+                                        <% } else if (program.type === 'child_health') { %>
+                                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M14 10h4.764a2 2 0 011.789 2.894l-3.5 7A2 2 0 0115.263 21h-4.017c-.163 0-.326-.02-.485-.06L7 20m7-10V5a2 2 0 00-2-2h-.095c-.5 0-.905.405-.905.905 0 .714-.211 1.412-.608 2.006L7 11v9m7-10h-2M7 20H5a2 2 0 01-2-2v-6a2 2 0 012-2h2.5"></path>
+                                        <% } else { %>
+                                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 4v16m8-8H4"></path>
+                                        <% } %>
+                                    </svg>
+                                    <h3 class="text-xl font-bold mb-1"><%= program.name %></h3>
+                                </div>
+                            </div>
+                            <div class="absolute inset-0 bg-black/20 opacity-0 group-hover:opacity-100 transition-opacity flex items-center justify-center">
+                                <span class="text-white font-semibold text-lg">Click to Apply →</span>
+                            </div>
+                            <div class="absolute top-3 right-3 bg-emerald-500 text-white text-xs font-bold px-3 py-1 rounded-full">
+                                <%= program.status.toUpperCase() %>
                             </div>
                         </div>
-                        <div class="absolute inset-0 bg-black/20 opacity-0 group-hover:opacity-100 transition-opacity flex items-center justify-center">
-                            <span class="text-white font-semibold text-lg">Click to Apply →</span>
-                        </div>
-                        <div class="absolute top-3 right-3 bg-emerald-500 text-white text-xs font-bold px-3 py-1 rounded-full">
-                            FREE
-                        </div>
-                    </div>
-                    <div class="p-5">
-                        <p class="text-xs text-slate-500 mb-2">Jan 15 - Mar 31, 2026</p>
-                        <p class="text-sm text-slate-600 mb-4">Free COVID-19 booster shots for all citizens above 18 years.</p>
-                        <div class="flex items-center justify-between text-xs text-slate-600 mb-3">
-                            <span class="flex items-center gap-1">
-                                <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M17 20h5v-2a3 3 0 00-5.356-1.857M17 20H7m10 0v-2c0-.656-.126-1.283-.356-1.857M7 20H2v-2a3 3 0 015.356-1.857M7 20v-2c0-.656.126-1.283.356-1.857m0 0a5.002 5.002 0 019.288 0M15 7a3 3 0 11-6 0 3 3 0 016 0zm6 3a2 2 0 11-4 0 2 2 0 014 0zM7 10a2 2 0 11-4 0 2 2 0 014 0z"></path>
-                                </svg>
-                                2,847 enrolled
-                            </span>
-                            <span class="flex items-center gap-1">
-                                <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 21V5a2 2 0 00-2-2H7a2 2 0 00-2 2v16m14 0h2m-2 0h-5m-9 0H3m2 0h5M9 7h1m-1 4h1m4-4h1m-1 4h1m-5 10v-5a1 1 0 011-1h2a1 1 0 011 1v5m-4 0h4"></path>
-                                </svg>
-                                12 centers
-                            </span>
-                        </div>
-                        <button class="w-full py-2.5 bg-blue-600 text-white font-semibold rounded-lg hover:bg-blue-700 transition-colors group-hover:shadow-lg">
-                            Enroll Now
-                        </button>
-                    </div>
-                </div>
-            </a>
-
-            <!-- Program 2: Child Immunization Campaign -->
-            <a href="/citizen/program-apply/2" class="group block">
-                <div class="bg-white rounded-xl overflow-hidden shadow-sm border border-slate-200 hover:shadow-xl transition-all">
-                    <div class="relative h-48 bg-gradient-to-br from-emerald-600 via-emerald-500 to-teal-500 overflow-hidden">
-                        <div class="absolute inset-0 flex items-center justify-center text-white">
-                            <div class="text-center px-6">
-                                <svg class="w-16 h-16 mx-auto mb-3 opacity-90" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M14 10h4.764a2 2 0 011.789 2.894l-3.5 7A2 2 0 0115.263 21h-4.017c-.163 0-.326-.02-.485-.06L7 20m7-10V5a2 2 0 00-2-2h-.095c-.5 0-.905.405-.905.905 0 .714-.211 1.412-.608 2.006L7 11v9m7-10h-2M7 20H5a2 2 0 01-2-2v-6a2 2 0 012-2h2.5"></path>
-                                </svg>
-                                <h3 class="text-2xl font-bold mb-1">Child Immunization</h3>
-                                <h4 class="text-lg font-semibold text-white/90">Campaign 2026</h4>
+                        <div class="p-5">
+                            <p class="text-xs text-slate-500 mb-2"><%= new Date(program.startDate).toLocaleDateString() %> - <%= new Date(program.endDate).toLocaleDateString() %></p>
+                            <p class="text-sm text-slate-600 mb-4"><%= program.description.substring(0, 100) %><%= program.description.length > 100 ? '...' : '' %></p>
+                            <div class="flex items-center justify-between text-xs text-slate-600 mb-3">
+                                <span class="flex items-center gap-1">
+                                    <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M17 20h5v-2a3 3 0 00-5.356-1.857M17 20H7m10 0v-2c0-.656-.126-1.283-.356-1.857M7 20H2v-2a3 3 0 015.356-1.857M7 20v-2c0-.656.126-1.283.356-1.857m0 0a5.002 5.002 0 019.288 0M15 7a3 3 0 11-6 0 3 3 0 016 0zm6 3a2 2 0 11-4 0 2 2 0 014 0zM7 10a2 2 0 11-4 0 2 2 0 014 0z"></path>
+                                    </svg>
+                                    <%= program.enrolled || 0 %> enrolled
+                                </span>
+                                <span class="flex items-center gap-1">
+                                    <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M17.657 16.657L13.414 20.9a1.998 1.998 0 01-2.827 0l-4.244-4.243a8 8 0 1111.314 0z"></path>
+                                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 11a3 3 0 11-6 0 3 3 0 016 0z"></path>
+                                    </svg>
+                                    <%= program.locations %>
+                                </span>
                             </div>
-                        </div>
-                        <div class="absolute inset-0 bg-black/20 opacity-0 group-hover:opacity-100 transition-opacity flex items-center justify-center">
-                            <span class="text-white font-semibold text-lg">Click to Apply →</span>
-                        </div>
-                        <div class="absolute top-3 right-3 bg-emerald-500 text-white text-xs font-bold px-3 py-1 rounded-full">
-                            FREE
+                            <button class="w-full py-2 px-4 bg-blue-600 text-white font-medium rounded-lg hover:bg-blue-700 transition-colors">
+                                Apply Now →
+                            </button>
                         </div>
                     </div>
-                    <div class="p-5">
-                        <p class="text-xs text-slate-500 mb-2">Feb 1 - Feb 28, 2026</p>
-                        <p class="text-sm text-slate-600 mb-4">Routine immunization for children aged 0-5 years covering MMR, DPT vaccines.</p>
-                        <div class="flex items-center justify-between text-xs text-slate-600 mb-3">
-                            <span class="flex items-center gap-1">
-                                <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M17 20h5v-2a3 3 0 00-5.356-1.857M17 20H7m10 0v-2c0-.656-.126-1.283-.356-1.857M7 20H2v-2a3 3 0 015.356-1.857M7 20v-2c0-.656.126-1.283.356-1.857m0 0a5.002 5.002 0 019.288 0M15 7a3 3 0 11-6 0 3 3 0 016 0zm6 3a2 2 0 11-4 0 2 2 0 014 0zM7 10a2 2 0 11-4 0 2 2 0 014 0z"></path>
-                                </svg>
-                                1,254 enrolled
-                            </span>
-                            <span class="flex items-center gap-1">
-                                <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 21V5a2 2 0 00-2-2H7a2 2 0 00-2 2v16m14 0h2m-2 0h-5m-9 0H3m2 0h5M9 7h1m-1 4h1m4-4h1m-1 4h1m-5 10v-5a1 1 0 011-1h2a1 1 0 011 1v5m-4 0h4"></path>
-                                </svg>
-                                8 centers
-                            </span>
-                        </div>
-                        <button class="w-full py-2.5 bg-emerald-600 text-white font-semibold rounded-lg hover:bg-emerald-700 transition-colors group-hover:shadow-lg">
-                            Enroll Now
-                        </button>
-                    </div>
-                </div>
-            </a>
-
-            <!-- Program 3: Free Health Checkup Camp -->
-            <a href="/citizen/program-apply/3" class="group block">
-                <div class="bg-white rounded-xl overflow-hidden shadow-sm border border-slate-200 hover:shadow-xl transition-all">
-                    <div class="relative h-48 bg-gradient-to-br from-purple-600 via-purple-500 to-pink-500 overflow-hidden">
-                        <div class="absolute inset-0 flex items-center justify-center text-white">
-                            <div class="text-center px-6">
-                                <svg class="w-16 h-16 mx-auto mb-3 opacity-90" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5H7a2 2 0 00-2 2v12a2 2 0 002 2h10a2 2 0 002-2V7a2 2 0 00-2-2h-2M9 5a2 2 0 002 2h2a2 2 0 002-2M9 5a2 2 0 012-2h2a2 2 0 012 2m-6 9l2 2 4-4"></path>
-                                </svg>
-                                <h3 class="text-2xl font-bold mb-1">Free Health Checkup</h3>
-                                <h4 class="text-lg font-semibold text-white/90">Camp 2026</h4>
-                            </div>
-                        </div>
-                        <div class="absolute inset-0 bg-black/20 opacity-0 group-hover:opacity-100 transition-opacity flex items-center justify-center">
-                            <span class="text-white font-semibold text-lg">Click to Apply →</span>
-                        </div>
-                        <div class="absolute top-3 right-3 bg-emerald-500 text-white text-xs font-bold px-3 py-1 rounded-full">
-                            FREE
-                        </div>
-                    </div>
-                    <div class="p-5">
-                        <p class="text-xs text-slate-500 mb-2">Feb 10 - Feb 20, 2026</p>
-                        <p class="text-sm text-slate-600 mb-4">Comprehensive health screening for senior citizens including BP, diabetes checks.</p>
-                        <div class="flex items-center justify-between text-xs text-slate-600 mb-3">
-                            <span class="flex items-center gap-1">
-                                <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M17 20h5v-2a3 3 0 00-5.356-1.857M17 20H7m10 0v-2c0-.656-.126-1.283-.356-1.857M7 20H2v-2a3 3 0 015.356-1.857M7 20v-2c0-.656.126-1.283.356-1.857m0 0a5.002 5.002 0 019.288 0M15 7a3 3 0 11-6 0 3 3 0 016 0zm6 3a2 2 0 11-4 0 2 2 0 014 0zM7 10a2 2 0 11-4 0 2 2 0 014 0z"></path>
-                                </svg>
-                                432 enrolled
-                            </span>
-                            <span class="flex items-center gap-1">
-                                <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M17.657 16.657L13.414 20.9a1.998 1.998 0 01-2.827 0l-4.244-4.243a8 8 0 1111.314 0z"></path>
-                                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 11a3 3 0 11-6 0 3 3 0 016 0z"></path>
-                                </svg>
-                                5 locations
-                            </span>
-                        </div>
-                        <button class="w-full py-2.5 bg-purple-600 text-white font-semibold rounded-lg hover:bg-purple-700 transition-colors group-hover:shadow-lg">
-                            Enroll Now
-                        </button>
-                    </div>
-                </div>
-            </a>
+                </a>
+                <% }); %>
+            <% } else { %>
+            <div class="col-span-full text-center py-12 bg-white rounded-xl shadow-sm border border-slate-200">
+                <svg class="w-16 h-16 mx-auto text-slate-300 mb-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M20 13V6a2 2 0 00-2-2H6a2 2 0 00-2 2v7m16 0v5a2 2 0 01-2 2H6a2 2 0 01-2-2v-5m16 0h-2.586a1 1 0 00-.707.293l-2.414 2.414a1 1 0 01-.707.293h-3.172a1 1 0 01-.707-.293l-2.414-2.414A1 1 0 006.586 13H4"></path>
+                </svg>
+                <p class="text-slate-600 font-medium">No active programs at the moment</p>
+                <p class="text-sm text-slate-500 mt-2">Check back later for new health programs</p>
+            </div>
+            <% } %>
 
         </div>
 
-        <!-- Information Banner -->
-        <div class="bg-gradient-to-r from-blue-600 to-purple-600 rounded-2xl p-8 text-white">
-            <div class="flex items-start gap-6">
-                <div class="flex-shrink-0">
-                    <svg class="w-16 h-16 opacity-75" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M13 16h-1v-4h-1m1-4h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z"></path>
-                    </svg>
-                </div>
-                <div>
-                    <h3 class="text-2xl font-bold mb-3">How to Participate?</h3>
-                    <div class="grid grid-cols-1 md:grid-cols-3 gap-4">
-                        <div>
-                            <div class="flex items-center gap-2 mb-2">
-                                <div class="w-8 h-8 bg-white/20 rounded-full flex items-center justify-center font-bold">1</div>
-                                <h4 class="font-semibold">Choose Program</h4>
-                            </div>
-                            <p class="text-white/80 text-sm">Click on any program card to view details</p>
-                        </div>
-                        <div>
-                            <div class="flex items-center gap-2 mb-2">
-                                <div class="w-8 h-8 bg-white/20 rounded-full flex items-center justify-center font-bold">2</div>
-                                <h4 class="font-semibold">Fill Application</h4>
-                            </div>
-                            <p class="text-white/80 text-sm">Complete the enrollment form with your details</p>
-                        </div>
-                        <div>
-                            <div class="flex items-center gap-2 mb-2">
-                                <div class="w-8 h-8 bg-white/20 rounded-full flex items-center justify-center font-bold">3</div>
-                                <h4 class="font-semibold">Get Confirmation</h4>
-                            </div>
-                            <p class="text-white/80 text-sm">Receive SMS with appointment details</p>
-                        </div>
-                    </div>
-                </div>
-            </div>
+        <!-- Back to Dashboard -->
+        <div class="text-center">
+            <a 
+                href="/citizen/dashboard" 
+                class="inline-block px-6 py-2.5 border border-slate-300 text-slate-700 font-medium rounded-lg hover:bg-slate-50 transition-colors"
+            >
+                ← Back to Dashboard
+            </a>
         </div>
 
     </div>
 </div>
+</body>
+</html>

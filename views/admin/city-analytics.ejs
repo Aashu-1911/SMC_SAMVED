@@ -45,7 +45,7 @@
                 </svg>
             </div>
         </div>
-        <div class="text-3xl font-bold mb-1">0<span class="text-xl">/100</span></div>
+        <div class="text-3xl font-bold mb-1"><%= typeof stats !== 'undefined' ? stats.cityHealthScore : 0 %><span class="text-xl">/100</span></div>
         <div class="text-purple-100 text-sm font-medium">City Health Score</div>
         <div class="mt-3 text-xs text-purple-100">Overall health rating</div>
     </div>
@@ -73,7 +73,7 @@
                 </svg>
             </div>
         </div>
-        <div class="text-3xl font-bold mb-1">0<span class="text-xl">/5</span></div>
+        <div class="text-3xl font-bold mb-1"><%= typeof stats !== 'undefined' ? stats.avgHospitalScore.toFixed(1) : 0 %><span class="text-xl">/5</span></div>
         <div class="text-cyan-100 text-sm font-medium">Avg Hospital Score</div>
         <div class="mt-3 text-xs text-cyan-100">Performance rating</div>
     </div>
@@ -87,7 +87,7 @@
                 </svg>
             </div>
         </div>
-        <div class="text-3xl font-bold mb-1">0</div>
+        <div class="text-3xl font-bold mb-1"><%= typeof stats !== 'undefined' ? stats.livePrograms : 0 %></div>
         <div class="text-rose-100 text-sm font-medium">Live Programs</div>
         <div class="mt-3 text-xs text-rose-100">Active health programs</div>
     </div>
@@ -128,27 +128,34 @@
                 
                 <div class="p-4">
                     <!-- Overall Score Display -->
+                    <% 
+                      const healthScore = typeof stats !== 'undefined' ? stats.cityHealthScore : 0;
+                      const strokeDashoffset = 352 - (352 * healthScore / 100);
+                      const scoreColor = healthScore >= 70 ? '#10b981' : healthScore >= 50 ? '#f59e0b' : '#ef4444';
+                      const statusText = healthScore >= 70 ? 'Good Health Status' : healthScore >= 50 ? 'Fair Health Status' : 'Needs Improvement';
+                      const statusColor = healthScore >= 70 ? 'emerald' : healthScore >= 50 ? 'yellow' : 'red';
+                    %>
                     <div class="text-center mb-4">
                         <div class="relative inline-flex items-center justify-center w-32 h-32">
                             <!-- Background Circle -->
                             <svg class="w-32 h-32 transform -rotate-90">
                                 <circle cx="64" cy="64" r="56" stroke="#e2e8f0" stroke-width="10" fill="none"></circle>
-                                <!-- Progress Circle (75% for example) -->
-                                <circle cx="64" cy="64" r="56" stroke="#10b981" stroke-width="10" fill="none"
-                                    stroke-dasharray="352" stroke-dashoffset="88" stroke-linecap="round"></circle>
+                                <!-- Progress Circle (Dynamic) -->
+                                <circle cx="64" cy="64" r="56" stroke="<%= scoreColor %>" stroke-width="10" fill="none"
+                                    stroke-dasharray="352" stroke-dashoffset="<%= strokeDashoffset %>" stroke-linecap="round"></circle>
                             </svg>
                             <!-- Score Text -->
                             <div class="absolute inset-0 flex flex-col items-center justify-center">
-                                <span class="text-3xl font-bold text-slate-800">75</span>
+                                <span class="text-3xl font-bold text-slate-800"><%= healthScore %></span>
                                 <span class="text-xs text-slate-500 font-medium">out of 100</span>
                             </div>
                         </div>
                         <div class="mt-3">
-                            <div class="inline-flex items-center px-3 py-1 bg-emerald-100 text-emerald-700 rounded-full text-xs font-semibold">
+                            <div class="inline-flex items-center px-3 py-1 bg-<%= statusColor %>-100 text-<%= statusColor %>-700 rounded-full text-xs font-semibold">
                                 <svg class="w-4 h-4 mr-1" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                                     <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z"></path>
                                 </svg>
-                                Good Health Status
+                                <%= statusText %>
                             </div>
                         </div>
                     </div>
@@ -159,10 +166,10 @@
                         <div>
                             <div class="flex items-center justify-between mb-1">
                                 <span class="text-xs font-medium text-slate-700">Disease Control</span>
-                                <span class="text-xs font-bold text-blue-600">82</span>
+                                <span class="text-xs font-bold text-blue-600"><%= typeof stats !== 'undefined' ? stats.diseaseControlScore : 0 %></span>
                             </div>
                             <div class="w-full bg-slate-200 rounded-full h-1.5">
-                                <div class="bg-blue-600 h-1.5 rounded-full" style="width: 82%"></div>
+                                <div class="bg-blue-600 h-1.5 rounded-full" style="width: <%= typeof stats !== 'undefined' ? stats.diseaseControlScore : 0 %>%"></div>
                             </div>
                         </div>
 
@@ -170,10 +177,10 @@
                         <div>
                             <div class="flex items-center justify-between mb-1">
                                 <span class="text-xs font-medium text-slate-700">Infrastructure</span>
-                                <span class="text-xs font-bold text-emerald-600">78</span>
+                                <span class="text-xs font-bold text-emerald-600"><%= typeof stats !== 'undefined' ? stats.infrastructureScore : 0 %></span>
                             </div>
                             <div class="w-full bg-slate-200 rounded-full h-1.5">
-                                <div class="bg-emerald-600 h-1.5 rounded-full" style="width: 78%"></div>
+                                <div class="bg-emerald-600 h-1.5 rounded-full" style="width: <%= typeof stats !== 'undefined' ? stats.infrastructureScore : 0 %>%"></div>
                             </div>
                         </div>
 
@@ -181,10 +188,10 @@
                         <div>
                             <div class="flex items-center justify-between mb-1">
                                 <span class="text-xs font-medium text-slate-700">Vaccination Coverage</span>
-                                <span class="text-xs font-bold text-purple-600">85</span>
+                                <span class="text-xs font-bold text-purple-600"><%= typeof stats !== 'undefined' ? stats.vaccinationScore : 0 %></span>
                             </div>
                             <div class="w-full bg-slate-200 rounded-full h-1.5">
-                                <div class="bg-purple-600 h-1.5 rounded-full" style="width: 85%"></div>
+                                <div class="bg-purple-600 h-1.5 rounded-full" style="width: <%= typeof stats !== 'undefined' ? stats.vaccinationScore : 0 %>%"></div>
                             </div>
                         </div>
 
@@ -192,10 +199,10 @@
                         <div>
                             <div class="flex items-center justify-between mb-1">
                                 <span class="text-xs font-medium text-slate-700">Health Programs</span>
-                                <span class="text-xs font-bold text-orange-600">70</span>
+                                <span class="text-xs font-bold text-orange-600"><%= typeof stats !== 'undefined' ? stats.healthProgramsScore : 0 %></span>
                             </div>
                             <div class="w-full bg-slate-200 rounded-full h-1.5">
-                                <div class="bg-orange-600 h-1.5 rounded-full" style="width: 70%"></div>
+                                <div class="bg-orange-600 h-1.5 rounded-full" style="width: <%= typeof stats !== 'undefined' ? stats.healthProgramsScore : 0 %>%"></div>
                             </div>
                         </div>
 
@@ -203,17 +210,17 @@
                         <div>
                             <div class="flex items-center justify-between mb-1">
                                 <span class="text-xs font-medium text-slate-700">Emergency Response</span>
-                                <span class="text-xs font-bold text-red-600">68</span>
+                                <span class="text-xs font-bold text-red-600"><%= typeof stats !== 'undefined' ? stats.emergencyResponseScore : 0 %></span>
                             </div>
                             <div class="w-full bg-slate-200 rounded-full h-1.5">
-                                <div class="bg-red-600 h-1.5 rounded-full" style="width: 68%"></div>
+                                <div class="bg-red-600 h-1.5 rounded-full" style="width: <%= typeof stats !== 'undefined' ? stats.emergencyResponseScore : 0 %>%"></div>
                             </div>
                         </div>
                     </div>
 
                     <!-- Last Updated -->
                     <div class="mt-4 pt-3 border-t border-slate-200">
-                        <p class="text-[10px] text-slate-500">Last updated: <span class="font-medium">Feb 11, 2026</span></p>
+                        <p class="text-[10px] text-slate-500">Last updated: <span class="font-medium"><%= new Date().toLocaleDateString('en-US', { month: 'short', day: 'numeric', year: 'numeric' }) %></span></p>
                     </div>
                 </div>
             </div>
@@ -232,28 +239,28 @@
                         <div>
                             <div class="flex items-center justify-between mb-2">
                                 <span class="text-xs font-semibold text-slate-700">0-18 years</span>
-                                <span class="text-xs text-slate-500">248 cases</span>
+                                <span class="text-xs text-slate-500"><%= typeof ageGroups !== 'undefined' ? ageGroups['0-18'].total : 0 %> cases</span>
                             </div>
                             <div class="flex gap-1">
                                 <div class="flex-1">
                                     <div class="text-[10px] text-slate-600 mb-1">Dengue</div>
                                     <div class="w-full bg-slate-200 rounded h-6 flex items-center justify-center relative overflow-hidden">
-                                        <div class="absolute left-0 top-0 bottom-0 bg-blue-500 rounded" style="width: 60%"></div>
-                                        <span class="relative z-10 text-[10px] font-bold text-white">60%</span>
+                                        <div class="absolute left-0 top-0 bottom-0 bg-blue-500 rounded" style="width: <%= typeof ageGroups !== 'undefined' ? ageGroups['0-18'].DenguePercent : 0 %>%"></div>
+                                        <span class="relative z-10 text-[10px] font-bold <%= (typeof ageGroups !== 'undefined' && ageGroups['0-18'].DenguePercent > 40) ? 'text-white' : 'text-slate-700' %>"><%= typeof ageGroups !== 'undefined' ? ageGroups['0-18'].DenguePercent : 0 %>%</span>
                                     </div>
                                 </div>
                                 <div class="flex-1">
                                     <div class="text-[10px] text-slate-600 mb-1">Malaria</div>
                                     <div class="w-full bg-slate-200 rounded h-6 flex items-center justify-center relative overflow-hidden">
-                                        <div class="absolute left-0 top-0 bottom-0 bg-green-500 rounded" style="width: 25%"></div>
-                                        <span class="relative z-10 text-[10px] font-bold text-slate-700">25%</span>
+                                        <div class="absolute left-0 top-0 bottom-0 bg-green-500 rounded" style="width: <%= typeof ageGroups !== 'undefined' ? ageGroups['0-18'].MalariaPercent : 0 %>%"></div>
+                                        <span class="relative z-10 text-[10px] font-bold <%= (typeof ageGroups !== 'undefined' && ageGroups['0-18'].MalariaPercent > 40) ? 'text-white' : 'text-slate-700' %>"><%= typeof ageGroups !== 'undefined' ? ageGroups['0-18'].MalariaPercent : 0 %>%</span>
                                     </div>
                                 </div>
                                 <div class="flex-1">
                                     <div class="text-[10px] text-slate-600 mb-1">COVID-19</div>
                                     <div class="w-full bg-slate-200 rounded h-6 flex items-center justify-center relative overflow-hidden">
-                                        <div class="absolute left-0 top-0 bottom-0 bg-red-500 rounded" style="width: 15%"></div>
-                                        <span class="relative z-10 text-[10px] font-bold text-slate-700">15%</span>
+                                        <div class="absolute left-0 top-0 bottom-0 bg-red-500 rounded" style="width: <%= typeof ageGroups !== 'undefined' ? ageGroups['0-18'].CovidPercent : 0 %>%"></div>
+                                        <span class="relative z-10 text-[10px] font-bold <%= (typeof ageGroups !== 'undefined' && ageGroups['0-18'].CovidPercent > 40) ? 'text-white' : 'text-slate-700' %>"><%= typeof ageGroups !== 'undefined' ? ageGroups['0-18'].CovidPercent : 0 %>%</span>
                                     </div>
                                 </div>
                             </div>
@@ -263,28 +270,28 @@
                         <div>
                             <div class="flex items-center justify-between mb-2">
                                 <span class="text-xs font-semibold text-slate-700">19-35 years</span>
-                                <span class="text-xs text-slate-500">412 cases</span>
+                                <span class="text-xs text-slate-500"><%= typeof ageGroups !== 'undefined' ? ageGroups['19-35'].total : 0 %> cases</span>
                             </div>
                             <div class="flex gap-1">
                                 <div class="flex-1">
                                     <div class="text-[10px] text-slate-600 mb-1">Dengue</div>
                                     <div class="w-full bg-slate-200 rounded h-6 flex items-center justify-center relative overflow-hidden">
-                                        <div class="absolute left-0 top-0 bottom-0 bg-blue-500 rounded" style="width: 45%"></div>
-                                        <span class="relative z-10 text-[10px] font-bold text-white">45%</span>
+                                        <div class="absolute left-0 top-0 bottom-0 bg-blue-500 rounded" style="width: <%= typeof ageGroups !== 'undefined' ? ageGroups['19-35'].DenguePercent : 0 %>%"></div>
+                                        <span class="relative z-10 text-[10px] font-bold <%= (typeof ageGroups !== 'undefined' && ageGroups['19-35'].DenguePercent > 40) ? 'text-white' : 'text-slate-700' %>"><%= typeof ageGroups !== 'undefined' ? ageGroups['19-35'].DenguePercent : 0 %>%</span>
                                     </div>
                                 </div>
                                 <div class="flex-1">
                                     <div class="text-[10px] text-slate-600 mb-1">Malaria</div>
                                     <div class="w-full bg-slate-200 rounded h-6 flex items-center justify-center relative overflow-hidden">
-                                        <div class="absolute left-0 top-0 bottom-0 bg-green-500 rounded" style="width: 30%"></div>
-                                        <span class="relative z-10 text-[10px] font-bold text-white">30%</span>
+                                        <div class="absolute left-0 top-0 bottom-0 bg-green-500 rounded" style="width: <%= typeof ageGroups !== 'undefined' ? ageGroups['19-35'].MalariaPercent : 0 %>%"></div>
+                                        <span class="relative z-10 text-[10px] font-bold <%= (typeof ageGroups !== 'undefined' && ageGroups['19-35'].MalariaPercent > 40) ? 'text-white' : 'text-slate-700' %>"><%= typeof ageGroups !== 'undefined' ? ageGroups['19-35'].MalariaPercent : 0 %>%</span>
                                     </div>
                                 </div>
                                 <div class="flex-1">
                                     <div class="text-[10px] text-slate-600 mb-1">COVID-19</div>
                                     <div class="w-full bg-slate-200 rounded h-6 flex items-center justify-center relative overflow-hidden">
-                                        <div class="absolute left-0 top-0 bottom-0 bg-red-500 rounded" style="width: 25%"></div>
-                                        <span class="relative z-10 text-[10px] font-bold text-slate-700">25%</span>
+                                        <div class="absolute left-0 top-0 bottom-0 bg-red-500 rounded" style="width: <%= typeof ageGroups !== 'undefined' ? ageGroups['19-35'].CovidPercent : 0 %>%"></div>
+                                        <span class="relative z-10 text-[10px] font-bold <%= (typeof ageGroups !== 'undefined' && ageGroups['19-35'].CovidPercent > 40) ? 'text-white' : 'text-slate-700' %>"><%= typeof ageGroups !== 'undefined' ? ageGroups['19-35'].CovidPercent : 0 %>%</span>
                                     </div>
                                 </div>
                             </div>
@@ -294,28 +301,28 @@
                         <div>
                             <div class="flex items-center justify-between mb-2">
                                 <span class="text-xs font-semibold text-slate-700">36-50 years</span>
-                                <span class="text-xs text-slate-500">385 cases</span>
+                                <span class="text-xs text-slate-500"><%= typeof ageGroups !== 'undefined' ? ageGroups['36-50'].total : 0 %> cases</span>
                             </div>
                             <div class="flex gap-1">
                                 <div class="flex-1">
                                     <div class="text-[10px] text-slate-600 mb-1">Dengue</div>
                                     <div class="w-full bg-slate-200 rounded h-6 flex items-center justify-center relative overflow-hidden">
-                                        <div class="absolute left-0 top-0 bottom-0 bg-blue-500 rounded" style="width: 35%"></div>
-                                        <span class="relative z-10 text-[10px] font-bold text-white">35%</span>
+                                        <div class="absolute left-0 top-0 bottom-0 bg-blue-500 rounded" style="width: <%= typeof ageGroups !== 'undefined' ? ageGroups['36-50'].DenguePercent : 0 %>%"></div>
+                                        <span class="relative z-10 text-[10px] font-bold <%= (typeof ageGroups !== 'undefined' && ageGroups['36-50'].DenguePercent > 40) ? 'text-white' : 'text-slate-700' %>"><%= typeof ageGroups !== 'undefined' ? ageGroups['36-50'].DenguePercent : 0 %>%</span>
                                     </div>
                                 </div>
                                 <div class="flex-1">
                                     <div class="text-[10px] text-slate-600 mb-1">Malaria</div>
                                     <div class="w-full bg-slate-200 rounded h-6 flex items-center justify-center relative overflow-hidden">
-                                        <div class="absolute left-0 top-0 bottom-0 bg-green-500 rounded" style="width: 28%"></div>
-                                        <span class="relative z-10 text-[10px] font-bold text-white">28%</span>
+                                        <div class="absolute left-0 top-0 bottom-0 bg-green-500 rounded" style="width: <%= typeof ageGroups !== 'undefined' ? ageGroups['36-50'].MalariaPercent : 0 %>%"></div>
+                                        <span class="relative z-10 text-[10px] font-bold <%= (typeof ageGroups !== 'undefined' && ageGroups['36-50'].MalariaPercent > 40) ? 'text-white' : 'text-slate-700' %>"><%= typeof ageGroups !== 'undefined' ? ageGroups['36-50'].MalariaPercent : 0 %>%</span>
                                     </div>
                                 </div>
                                 <div class="flex-1">
                                     <div class="text-[10px] text-slate-600 mb-1">COVID-19</div>
                                     <div class="w-full bg-slate-200 rounded h-6 flex items-center justify-center relative overflow-hidden">
-                                        <div class="absolute left-0 top-0 bottom-0 bg-red-500 rounded" style="width: 37%"></div>
-                                        <span class="relative z-10 text-[10px] font-bold text-white">37%</span>
+                                        <div class="absolute left-0 top-0 bottom-0 bg-red-500 rounded" style="width: <%= typeof ageGroups !== 'undefined' ? ageGroups['36-50'].CovidPercent : 0 %>%"></div>
+                                        <span class="relative z-10 text-[10px] font-bold <%= (typeof ageGroups !== 'undefined' && ageGroups['36-50'].CovidPercent > 40) ? 'text-white' : 'text-slate-700' %>"><%= typeof ageGroups !== 'undefined' ? ageGroups['36-50'].CovidPercent : 0 %>%</span>
                                     </div>
                                 </div>
                             </div>
@@ -325,28 +332,28 @@
                         <div>
                             <div class="flex items-center justify-between mb-2">
                                 <span class="text-xs font-semibold text-slate-700">51-65 years</span>
-                                <span class="text-xs text-slate-500">298 cases</span>
+                                <span class="text-xs text-slate-500"><%= typeof ageGroups !== 'undefined' ? ageGroups['51-65'].total : 0 %> cases</span>
                             </div>
                             <div class="flex gap-1">
                                 <div class="flex-1">
                                     <div class="text-[10px] text-slate-600 mb-1">Dengue</div>
                                     <div class="w-full bg-slate-200 rounded h-6 flex items-center justify-center relative overflow-hidden">
-                                        <div class="absolute left-0 top-0 bottom-0 bg-blue-500 rounded" style="width: 28%"></div>
-                                        <span class="relative z-10 text-[10px] font-bold text-white">28%</span>
+                                        <div class="absolute left-0 top-0 bottom-0 bg-blue-500 rounded" style="width: <%= typeof ageGroups !== 'undefined' ? ageGroups['51-65'].DenguePercent : 0 %>%"></div>
+                                        <span class="relative z-10 text-[10px] font-bold <%= (typeof ageGroups !== 'undefined' && ageGroups['51-65'].DenguePercent > 40) ? 'text-white' : 'text-slate-700' %>"><%= typeof ageGroups !== 'undefined' ? ageGroups['51-65'].DenguePercent : 0 %>%</span>
                                     </div>
                                 </div>
                                 <div class="flex-1">
                                     <div class="text-[10px] text-slate-600 mb-1">Malaria</div>
                                     <div class="w-full bg-slate-200 rounded h-6 flex items-center justify-center relative overflow-hidden">
-                                        <div class="absolute left-0 top-0 bottom-0 bg-green-500 rounded" style="width: 22%"></div>
-                                        <span class="relative z-10 text-[10px] font-bold text-slate-700">22%</span>
+                                        <div class="absolute left-0 top-0 bottom-0 bg-green-500 rounded" style="width: <%= typeof ageGroups !== 'undefined' ? ageGroups['51-65'].MalariaPercent : 0 %>%"></div>
+                                        <span class="relative z-10 text-[10px] font-bold <%= (typeof ageGroups !== 'undefined' && ageGroups['51-65'].MalariaPercent > 40) ? 'text-white' : 'text-slate-700' %>"><%= typeof ageGroups !== 'undefined' ? ageGroups['51-65'].MalariaPercent : 0 %>%</span>
                                     </div>
                                 </div>
                                 <div class="flex-1">
                                     <div class="text-[10px] text-slate-600 mb-1">COVID-19</div>
                                     <div class="w-full bg-slate-200 rounded h-6 flex items-center justify-center relative overflow-hidden">
-                                        <div class="absolute left-0 top-0 bottom-0 bg-red-500 rounded" style="width: 50%"></div>
-                                        <span class="relative z-10 text-[10px] font-bold text-white">50%</span>
+                                        <div class="absolute left-0 top-0 bottom-0 bg-red-500 rounded" style="width: <%= typeof ageGroups !== 'undefined' ? ageGroups['51-65'].CovidPercent : 0 %>%"></div>
+                                        <span class="relative z-10 text-[10px] font-bold <%= (typeof ageGroups !== 'undefined' && ageGroups['51-65'].CovidPercent > 40) ? 'text-white' : 'text-slate-700' %>"><%= typeof ageGroups !== 'undefined' ? ageGroups['51-65'].CovidPercent : 0 %>%</span>
                                     </div>
                                 </div>
                             </div>
@@ -356,28 +363,28 @@
                         <div>
                             <div class="flex items-center justify-between mb-2">
                                 <span class="text-xs font-semibold text-slate-700">65+ years</span>
-                                <span class="text-xs text-slate-500">187 cases</span>
+                                <span class="text-xs text-slate-500"><%= typeof ageGroups !== 'undefined' ? ageGroups['65+'].total : 0 %> cases</span>
                             </div>
                             <div class="flex gap-1">
                                 <div class="flex-1">
                                     <div class="text-[10px] text-slate-600 mb-1">Dengue</div>
                                     <div class="w-full bg-slate-200 rounded h-6 flex items-center justify-center relative overflow-hidden">
-                                        <div class="absolute left-0 top-0 bottom-0 bg-blue-500 rounded" style="width: 18%"></div>
-                                        <span class="relative z-10 text-[10px] font-bold text-slate-700">18%</span>
+                                        <div class="absolute left-0 top-0 bottom-0 bg-blue-500 rounded" style="width: <%= typeof ageGroups !== 'undefined' ? ageGroups['65+'].DenguePercent : 0 %>%"></div>
+                                        <span class="relative z-10 text-[10px] font-bold <%= (typeof ageGroups !== 'undefined' && ageGroups['65+'].DenguePercent > 40) ? 'text-white' : 'text-slate-700' %>"><%= typeof ageGroups !== 'undefined' ? ageGroups['65+'].DenguePercent : 0 %>%</span>
                                     </div>
                                 </div>
                                 <div class="flex-1">
                                     <div class="text-[10px] text-slate-600 mb-1">Malaria</div>
                                     <div class="w-full bg-slate-200 rounded h-6 flex items-center justify-center relative overflow-hidden">
-                                        <div class="absolute left-0 top-0 bottom-0 bg-green-500 rounded" style="width: 15%"></div>
-                                        <span class="relative z-10 text-[10px] font-bold text-slate-700">15%</span>
+                                        <div class="absolute left-0 top-0 bottom-0 bg-green-500 rounded" style="width: <%= typeof ageGroups !== 'undefined' ? ageGroups['65+'].MalariaPercent : 0 %>%"></div>
+                                        <span class="relative z-10 text-[10px] font-bold <%= (typeof ageGroups !== 'undefined' && ageGroups['65+'].MalariaPercent > 40) ? 'text-white' : 'text-slate-700' %>"><%= typeof ageGroups !== 'undefined' ? ageGroups['65+'].MalariaPercent : 0 %>%</span>
                                     </div>
                                 </div>
                                 <div class="flex-1">
                                     <div class="text-[10px] text-slate-600 mb-1">COVID-19</div>
                                     <div class="w-full bg-slate-200 rounded h-6 flex items-center justify-center relative overflow-hidden">
-                                        <div class="absolute left-0 top-0 bottom-0 bg-red-500 rounded" style="width: 67%"></div>
-                                        <span class="relative z-10 text-[10px] font-bold text-white">67%</span>
+                                        <div class="absolute left-0 top-0 bottom-0 bg-red-500 rounded" style="width: <%= typeof ageGroups !== 'undefined' ? ageGroups['65+'].CovidPercent : 0 %>%"></div>
+                                        <span class="relative z-10 text-[10px] font-bold <%= (typeof ageGroups !== 'undefined' && ageGroups['65+'].CovidPercent > 40) ? 'text-white' : 'text-slate-700' %>"><%= typeof ageGroups !== 'undefined' ? ageGroups['65+'].CovidPercent : 0 %>%</span>
                                     </div>
                                 </div>
                             </div>
@@ -428,10 +435,56 @@
             <div class="flex gap-3">
                 <select class="px-3 py-2 border border-slate-300 rounded-lg text-sm focus:outline-none focus:ring-2 focus:ring-blue-500">
                     <option value="">All Local Areas</option>
-                    <option value="zone1">Zone 1</option>
-                    <option value="zone2">Zone 2</option>
-                    <option value="zone3">Zone 3</option>
-                    <option value="zone4">Zone 4</option>
+                    <optgroup label="Central / Old City Zone">
+                        <option value="solapur-city-core">Solapur City (Core)</option>
+                        <option value="mangalwar-peth">Mangalwar Peth</option>
+                        <option value="budhwar-peth">Budhwar Peth</option>
+                        <option value="shukrawar-peth">Shukrawar Peth</option>
+                        <option value="kasba-solapur">Kasba Solapur</option>
+                        <option value="navi-peth">Navi Peth</option>
+                        <option value="siddheshwar-peth">Siddheshwar Peth</option>
+                        <option value="murarji-peth">Murarji Peth</option>
+                        <option value="goldfinch-peth">Goldfinch Peth</option>
+                    </optgroup>
+                    <optgroup label="Central Residential Zone">
+                        <option value="railway-lines">Railway Lines Area</option>
+                        <option value="saat-rasta">Saat Rasta Area</option>
+                        <option value="lashkar">Lashkar</option>
+                        <option value="ujani-colony">Ujani Colony</option>
+                        <option value="sakhar-peth">Sakhar Peth</option>
+                        <option value="begum-peth">Begum Peth</option>
+                    </optgroup>
+                    <optgroup label="North Solapur Zone">
+                        <option value="ashok-chowk">Ashok Chowk</option>
+                        <option value="akkalkot-road">Akkalkot Road Area</option>
+                        <option value="bale">Bale</option>
+                        <option value="degaon">Degaon</option>
+                        <option value="hipparga">Hipparga</option>
+                        <option value="boramani">Boramani</option>
+                    </optgroup>
+                    <optgroup label="East Solapur / Industrial Zone">
+                        <option value="midc-solapur">MIDC Solapur</option>
+                        <option value="hotgi-road">Hotgi Road Area</option>
+                        <option value="konark-nagar">Konark Nagar</option>
+                        <option value="datta-nagar">Datta Nagar</option>
+                        <option value="saat-rasta-east">Saat Rasta East</option>
+                        <option value="railway-goods-yard">Railway Goods Yard Area</option>
+                    </optgroup>
+                    <optgroup label="South & South-West Zone">
+                        <option value="vijapur-road">Vijapur Road Area</option>
+                        <option value="jule-solapur">Jule Solapur</option>
+                        <option value="jule-midc">Jule MIDC</option>
+                        <option value="walchand-nagar">Walchand Nagar</option>
+                        <option value="majrewadi">Majrewadi</option>
+                        <option value="kegaon">Kegaon</option>
+                    </optgroup>
+                    <optgroup label="West / Peripheral Development Zone">
+                        <option value="kumbhari">Kumbhari</option>
+                        <option value="shelgi">Shelgi</option>
+                        <option value="dhotri">Dhotri</option>
+                        <option value="antrolikar-nagar">Antrolikar Nagar</option>
+                        <option value="sainath-nagar">Sainath Nagar</option>
+                    </optgroup>
                 </select>
                 <select class="px-3 py-2 border border-slate-300 rounded-lg text-sm focus:outline-none focus:ring-2 focus:ring-blue-500">
                     <option value="30">Last 30 days</option>
@@ -443,32 +496,7 @@
         </div>
         
         <div class="p-6">
-            <div class="w-full h-80 bg-slate-50 rounded-xl flex items-center justify-center">
-                <div class="text-center">
-                    <svg class="w-12 h-12 mx-auto text-slate-400 mb-2" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M7 12l3-3 3 3 4-4M8 21l4-4 4 4M3 4h18M4 4h16v12a1 1 0 01-1 1H5a1 1 0 01-1-1V4z"></path>
-                    </svg>
-                    <p class="text-slate-500 text-sm font-medium">Multi-line chart will be displayed here</p>
-                    <div class="flex items-center justify-center gap-4 mt-4">
-                        <div class="flex items-center gap-2">
-                            <div class="w-3 h-3 rounded-full bg-red-500"></div>
-                            <span class="text-xs text-slate-600">COVID-19</span>
-                        </div>
-                        <div class="flex items-center gap-2">
-                            <div class="w-3 h-3 rounded-full bg-blue-500"></div>
-                            <span class="text-xs text-slate-600">Dengue</span>
-                        </div>
-                        <div class="flex items-center gap-2">
-                            <div class="w-3 h-3 rounded-full bg-green-500"></div>
-                            <span class="text-xs text-slate-600">Malaria</span>
-                        </div>
-                        <div class="flex items-center gap-2">
-                            <div class="w-3 h-3 rounded-full bg-yellow-500"></div>
-                            <span class="text-xs text-slate-600">Typhoid</span>
-                        </div>
-                    </div>
-                </div>
-            </div>
+            <canvas id="diseaseGrowthChart" class="w-full" style="height: 320px;"></canvas>
         </div>
     </div>
 
@@ -486,10 +514,56 @@
             <div class="flex gap-3">
                 <select class="px-3 py-2 border border-slate-300 rounded-lg text-sm focus:outline-none focus:ring-2 focus:ring-emerald-500">
                     <option value="">All Local Areas</option>
-                    <option value="zone1">Zone 1</option>
-                    <option value="zone2">Zone 2</option>
-                    <option value="zone3">Zone 3</option>
-                    <option value="zone4">Zone 4</option>
+                    <optgroup label="Central / Old City Zone">
+                        <option value="solapur-city-core">Solapur City (Core)</option>
+                        <option value="mangalwar-peth">Mangalwar Peth</option>
+                        <option value="budhwar-peth">Budhwar Peth</option>
+                        <option value="shukrawar-peth">Shukrawar Peth</option>
+                        <option value="kasba-solapur">Kasba Solapur</option>
+                        <option value="navi-peth">Navi Peth</option>
+                        <option value="siddheshwar-peth">Siddheshwar Peth</option>
+                        <option value="murarji-peth">Murarji Peth</option>
+                        <option value="goldfinch-peth">Goldfinch Peth</option>
+                    </optgroup>
+                    <optgroup label="Central Residential Zone">
+                        <option value="railway-lines">Railway Lines Area</option>
+                        <option value="saat-rasta">Saat Rasta Area</option>
+                        <option value="lashkar">Lashkar</option>
+                        <option value="ujani-colony">Ujani Colony</option>
+                        <option value="sakhar-peth">Sakhar Peth</option>
+                        <option value="begum-peth">Begum Peth</option>
+                    </optgroup>
+                    <optgroup label="North Solapur Zone">
+                        <option value="ashok-chowk">Ashok Chowk</option>
+                        <option value="akkalkot-road">Akkalkot Road Area</option>
+                        <option value="bale">Bale</option>
+                        <option value="degaon">Degaon</option>
+                        <option value="hipparga">Hipparga</option>
+                        <option value="boramani">Boramani</option>
+                    </optgroup>
+                    <optgroup label="East Solapur / Industrial Zone">
+                        <option value="midc-solapur">MIDC Solapur</option>
+                        <option value="hotgi-road">Hotgi Road Area</option>
+                        <option value="konark-nagar">Konark Nagar</option>
+                        <option value="datta-nagar">Datta Nagar</option>
+                        <option value="saat-rasta-east">Saat Rasta East</option>
+                        <option value="railway-goods-yard">Railway Goods Yard Area</option>
+                    </optgroup>
+                    <optgroup label="South & South-West Zone">
+                        <option value="vijapur-road">Vijapur Road Area</option>
+                        <option value="jule-solapur">Jule Solapur</option>
+                        <option value="jule-midc">Jule MIDC</option>
+                        <option value="walchand-nagar">Walchand Nagar</option>
+                        <option value="majrewadi">Majrewadi</option>
+                        <option value="kegaon">Kegaon</option>
+                    </optgroup>
+                    <optgroup label="West / Peripheral Development Zone">
+                        <option value="kumbhari">Kumbhari</option>
+                        <option value="shelgi">Shelgi</option>
+                        <option value="dhotri">Dhotri</option>
+                        <option value="antrolikar-nagar">Antrolikar Nagar</option>
+                        <option value="sainath-nagar">Sainath Nagar</option>
+                    </optgroup>
                 </select>
                 <select class="px-3 py-2 border border-slate-300 rounded-lg text-sm focus:outline-none focus:ring-2 focus:ring-emerald-500">
                     <option value="month">This Month</option>
@@ -526,3 +600,150 @@
     </div>
 
 </div>
+<script>
+// Disease Growth Over Time Chart
+(function() {
+    const diseaseColors = {
+        'COVID-19': {
+            border: 'rgb(239, 68, 68)',
+            background: 'rgba(239, 68, 68, 0.1)'
+        },
+        'Dengue': {
+            border: 'rgb(59, 130, 246)',
+            background: 'rgba(59, 130, 246, 0.1)'
+        },
+        'Malaria': {
+            border: 'rgb(34, 197, 94)',
+            background: 'rgba(34, 197, 94, 0.1)'
+        },
+        'Typhoid': {
+            border: 'rgb(234, 179, 8)',
+            background: 'rgba(234, 179, 8, 0.1)'
+        },
+        'Tuberculosis': {
+            border: 'rgb(168, 85, 247)',
+            background: 'rgba(168, 85, 247, 0.1)'
+        },
+        'Diabetes': {
+            border: 'rgb(236, 72, 153)',
+            background: 'rgba(236, 72, 153, 0.1)'
+        },
+        'Hypertension': {
+            border: 'rgb(249, 115, 22)',
+            background: 'rgba(249, 115, 22, 0.1)'
+        }
+    };
+
+    const diseaseGrowthData = <%- JSON.stringify(diseaseGrowthData) %>;
+    
+    const ctx = document.getElementById('diseaseGrowthChart');
+    if (ctx && diseaseGrowthData) {
+        const datasets = diseaseGrowthData.datasets.map(dataset => {
+            const colors = diseaseColors[dataset.label] || {
+                border: 'rgb(100, 116, 139)',
+                background: 'rgba(100, 116, 139, 0.1)'
+            };
+            
+            return {
+                label: dataset.label,
+                data: dataset.data,
+                borderColor: colors.border,
+                backgroundColor: colors.background,
+                borderWidth: 2,
+                tension: 0.4,
+                fill: true,
+                pointRadius: 0,
+                pointHoverRadius: 6,
+                pointHoverBackgroundColor: colors.border,
+                pointHoverBorderColor: '#fff',
+                pointHoverBorderWidth: 2
+            };
+        });
+
+        new Chart(ctx, {
+            type: 'line',
+            data: {
+                labels: diseaseGrowthData.labels,
+                datasets: datasets
+            },
+            options: {
+                responsive: true,
+                maintainAspectRatio: false,
+                interaction: {
+                    mode: 'index',
+                    intersect: false
+                },
+                plugins: {
+                    legend: {
+                        display: true,
+                        position: 'bottom',
+                        labels: {
+                            usePointStyle: true,
+                            padding: 15,
+                            font: {
+                                size: 12,
+                                family: 'Inter, sans-serif'
+                            }
+                        }
+                    },
+                    tooltip: {
+                        backgroundColor: 'rgba(0, 0, 0, 0.8)',
+                        padding: 12,
+                        titleFont: {
+                            size: 13,
+                            weight: '600'
+                        },
+                        bodyFont: {
+                            size: 12
+                        },
+                        callbacks: {
+                            label: function(context) {
+                                return context.dataset.label + ': ' + context.parsed.y + ' cases';
+                            }
+                        }
+                    }
+                },
+                scales: {
+                    x: {
+                        grid: {
+                            display: false
+                        },
+                        ticks: {
+                            font: {
+                                size: 11,
+                                family: 'Inter, sans-serif'
+                            },
+                            color: '#64748b'
+                        }
+                    },
+                    y: {
+                        beginAtZero: true,
+                        grid: {
+                            color: '#f1f5f9',
+                            drawBorder: false
+                        },
+                        ticks: {
+                            font: {
+                                size: 11,
+                                family: 'Inter, sans-serif'
+                            },
+                            color: '#64748b',
+                            precision: 0
+                        },
+                        title: {
+                            display: true,
+                            text: 'Total Cases',
+                            font: {
+                                size: 12,
+                                weight: '600',
+                                family: 'Inter, sans-serif'
+                            },
+                            color: '#475569'
+                        }
+                    }
+                }
+            }
+        });
+    }
+})();
+</script>

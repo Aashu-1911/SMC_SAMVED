@@ -368,6 +368,10 @@
           <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M17 20h5v-2a3 3 0 00-5.356-1.857M17 20H7m10 0v-2c0-.656-.126-1.283-.356-1.857M7 20H2v-2a3 3 0 015.356-1.857M7 20v-2c0-.656.126-1.283.356-1.857m0 0a5.002 5.002 0 019.288 0M15 7a3 3 0 11-6 0 3 3 0 016 0z"></path></svg>
           Citizen Services
         </a>
+        <a href="#programs" onclick="showSection('programs'); setActiveNav(this)" class="nav-item flex items-center gap-2 px-4 py-4 text-sm font-medium whitespace-nowrap hover:bg-white/10 transition-colors border-b-3 border-transparent">
+          <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12h6m-6 4h6m2 5H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z"></path></svg>
+          Health Programs
+        </a>
         <a href="#analytics" onclick="showSection('analytics'); setActiveNav(this)" class="nav-item flex items-center gap-2 px-4 py-4 text-sm font-medium whitespace-nowrap hover:bg-white/10 transition-colors border-b-3 border-transparent">
           <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 19v-6a2 2 0 00-2-2H5a2 2 0 00-2 2v6a2 2 0 002 2h2a2 2 0 002-2zm0 0V9a2 2 0 012-2h2a2 2 0 012 2v10m-6 0a2 2 0 002 2h2a2 2 0 002-2m0 0V5a2 2 0 012-2h2a2 2 0 012 2v14a2 2 0 01-2 2h-2a2 2 0 01-2-2z"></path></svg>
           Health Analytics
@@ -537,9 +541,20 @@
                         </div>
                       </div>
                       <p class="text-white/90 mb-4"><%= program.description %></p>
-                      <div class="flex items-center gap-4 text-sm">
+                      <div class="flex items-center gap-4 text-sm mb-4">
                         <span class="bg-white/20 px-3 py-1 rounded-full">📍 <%= program.locations %></span>
                         <span class="bg-green-500 px-3 py-1 rounded-full">✅ Active</span>
+                      </div>
+                      <div class="mt-6">
+                        <a 
+                          href="/citizen/program-apply/<%= program._id %>" 
+                          class="inline-flex items-center gap-2 px-6 py-3 bg-white text-blue-600 font-semibold rounded-lg hover:bg-blue-50 transition-all duration-200 shadow-lg hover:shadow-xl"
+                        >
+                          <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12h6m-6 4h6m2 5H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z"></path>
+                          </svg>
+                          Apply Now
+                        </a>
                       </div>
                     </div>
                     <div class="ml-8">
@@ -1176,6 +1191,138 @@
 
       </section>
 
+      <!-- ======================= SECTION: HEALTH PROGRAMS ======================= -->
+      <section id="section-programs" class="section-content hidden">
+        
+        <!-- Header -->
+        <div class="mb-8">
+          <h1 class="text-4xl font-bold text-slate-800 mb-2">Health Programs</h1>
+          <p class="text-lg text-slate-600">Participate in active health programs and campaigns by Solapur Municipal Corporation</p>
+        </div>
+
+        <!-- Stats Banner -->
+        <div class="grid grid-cols-1 md:grid-cols-3 gap-6 mb-8">
+          <div class="bg-white rounded-xl shadow-sm border border-slate-200 p-6">
+            <div class="flex items-center gap-4">
+              <div class="p-3 bg-blue-100 rounded-lg">
+                <svg class="w-8 h-8 text-blue-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                  <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12h6m-6 4h6m2 5H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z"></path>
+                </svg>
+              </div>
+              <div>
+                <div class="text-3xl font-bold text-slate-800"><%= programs ? programs.length : 0 %></div>
+                <div class="text-sm text-slate-600">Active Programs</div>
+              </div>
+            </div>
+          </div>
+
+          <div class="bg-white rounded-xl shadow-sm border border-slate-200 p-6">
+            <div class="flex items-center gap-4">
+              <div class="p-3 bg-emerald-100 rounded-lg">
+                <svg class="w-8 h-8 text-emerald-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                  <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M17 20h5v-2a3 3 0 00-5.356-1.857M17 20H7m10 0v-2c0-.656-.126-1.283-.356-1.857M7 20H2v-2a3 3 0 015.356-1.857M7 20v-2c0-.656.126-1.283.356-1.857m0 0a5.002 5.002 0 019.288 0M15 7a3 3 0 11-6 0 3 3 0 016 0zm6 3a2 2 0 11-4 0 2 2 0 014 0zM7 10a2 2 0 11-4 0 2 2 0 014 0z"></path>
+                </svg>
+              </div>
+              <div>
+                <div class="text-3xl font-bold text-slate-800">4,533</div>
+                <div class="text-sm text-slate-600">Citizens Enrolled</div>
+              </div>
+            </div>
+          </div>
+
+          <div class="bg-white rounded-xl shadow-sm border border-slate-200 p-6">
+            <div class="flex items-center gap-4">
+              <div class="p-3 bg-purple-100 rounded-lg">
+                <svg class="w-8 h-8 text-purple-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                  <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 21V5a2 2 0 00-2-2H7a2 2 0 00-2 2v16m14 0h2m-2 0h-5m-9 0H3m2 0h5M9 7h1m-1 4h1m4-4h1m-1 4h1m-5 10v-5a1 1 0 011-1h2a1 1 0 011 1v5m-4 0h4"></path>
+                </svg>
+              </div>
+              <div>
+                <div class="text-3xl font-bold text-slate-800">25</div>
+                <div class="text-sm text-slate-600">Health Centers</div>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <!-- Active Programs -->
+        <div class="mb-6">
+          <h2 class="text-2xl font-bold text-slate-800 mb-6 flex items-center gap-2">
+            <div class="w-2 h-2 bg-rose-500 rounded-full animate-pulse"></div>
+            Currently Active Programs
+          </h2>
+        </div>
+
+        <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6 mb-12">
+          
+          <% if (programs && programs.length > 0) { %>
+            <% programs.forEach((program) => { %>
+            <!-- <%= program.name %> -->
+            <a href="/citizen/program-apply/<%= program._id %>" class="group block">
+              <div class="bg-white rounded-xl overflow-hidden shadow-sm border border-slate-200 hover:shadow-xl transition-all">
+                <div class="relative h-48 bg-gradient-to-br from-<%= program.gradientColors.from %> to-<%= program.gradientColors.to %> overflow-hidden">
+                  <div class="absolute inset-0 flex items-center justify-center text-white">
+                    <div class="text-center px-6">
+                      <svg class="w-16 h-16 mx-auto mb-3 opacity-90" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                        <% if (program.type === 'vaccination') { %>
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12l2 2 4-4m5.618-4.016A11.955 11.955 0 0112 2.944a11.955 11.955 0 01-8.618 3.04A12.02 12.02 0 003 9c0 5.591 3.824 10.29 9 11.622 5.176-1.332 9-6.03 9-11.622 0-1.042-.133-2.052-.382-3.016z"></path>
+                        <% } else if (program.type === 'health_camp') { %>
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5H7a2 2 0 00-2 2v12a2 2 0 002 2h10a2 2 0 002-2V7a2 2 0 00-2-2h-2M9 5a2 2 0 002 2h2a2 2 0 002-2M9 5a2 2 0 012-2h2a2 2 0 012 2m-6 9l2 2 4-4"></path>
+                        <% } else if (program.type === 'child_health') { %>
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M14 10h4.764a2 2 0 011.789 2.894l-3.5 7A2 2 0 0115.263 21h-4.017c-.163 0-.326-.02-.485-.06L7 20m7-10V5a2 2 0 00-2-2h-.095c-.5 0-.905.405-.905.905 0 .714-.211 1.412-.608 2.006L7 11v9m7-10h-2M7 20H5a2 2 0 01-2-2v-6a2 2 0 012-2h2.5"></path>
+                        <% } else { %>
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 4v16m8-8H4"></path>
+                        <% } %>
+                      </svg>
+                      <h3 class="text-xl font-bold mb-1"><%= program.name %></h3>
+                    </div>
+                  </div>
+                  <div class="absolute inset-0 bg-black/20 opacity-0 group-hover:opacity-100 transition-opacity flex items-center justify-center">
+                    <span class="text-white font-semibold text-lg">Click to Apply →</span>
+                  </div>
+                  <div class="absolute top-3 right-3 bg-emerald-500 text-white text-xs font-bold px-3 py-1 rounded-full">
+                    <%= program.status.toUpperCase() %>
+                  </div>
+                </div>
+                <div class="p-5">
+                  <p class="text-xs text-slate-500 mb-2"><%= new Date(program.startDate).toLocaleDateString() %> - <%= new Date(program.endDate).toLocaleDateString() %></p>
+                  <p class="text-sm text-slate-600 mb-4"><%= program.description.substring(0, 100) %><%= program.description.length > 100 ? '...' : '' %></p>
+                  <div class="flex items-center justify-between text-xs text-slate-600 mb-3">
+                    <span class="flex items-center gap-1">
+                      <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M17 20h5v-2a3 3 0 00-5.356-1.857M17 20H7m10 0v-2c0-.656-.126-1.283-.356-1.857M7 20H2v-2a3 3 0 015.356-1.857M7 20v-2c0-.656.126-1.283.356-1.857m0 0a5.002 5.002 0 019.288 0M15 7a3 3 0 11-6 0 3 3 0 016 0zm6 3a2 2 0 11-4 0 2 2 0 014 0zM7 10a2 2 0 11-4 0 2 2 0 014 0z"></path>
+                      </svg>
+                      <%= program.enrolled || 0 %> enrolled
+                    </span>
+                    <span class="flex items-center gap-1">
+                      <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M17.657 16.657L13.414 20.9a1.998 1.998 0 01-2.827 0l-4.244-4.243a8 8 0 1111.314 0z"></path>
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 11a3 3 0 11-6 0 3 3 0 016 0z"></path>
+                      </svg>
+                      <%= program.locations %>
+                    </span>
+                  </div>
+                  <button class="w-full py-2 px-4 bg-blue-600 text-white font-medium rounded-lg hover:bg-blue-700 transition-colors">
+                    Apply Now →
+                  </button>
+                </div>
+              </div>
+            </a>
+            <% }); %>
+          <% } else { %>
+          <div class="col-span-full text-center py-12 bg-white rounded-xl shadow-sm border border-slate-200">
+            <svg class="w-16 h-16 mx-auto text-slate-300 mb-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+              <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M20 13V6a2 2 0 00-2-2H6a2 2 0 00-2 2v7m16 0v5a2 2 0 01-2 2H6a2 2 0 01-2-2v-5m16 0h-2.586a1 1 0 00-.707.293l-2.414 2.414a1 1 0 01-.707.293h-3.172a1 1 0 01-.707-.293l-2.414-2.414A1 1 0 006.586 13H4"></path>
+            </svg>
+            <p class="text-slate-600 font-medium">No active programs at the moment</p>
+            <p class="text-sm text-slate-500 mt-2">Check back later for new health programs</p>
+          </div>
+          <% } %>
+
+        </div>
+
+      </section>
+
       <!-- ======================= SECTION: NOTIFICATIONS INBOX ======================= -->
       <section id="section-notifications" class="section-content hidden">
         
@@ -1329,13 +1476,57 @@
               </div>
               <div class="relative">
                 <select id="wardFilter" class="appearance-none bg-white border border-slate-300 rounded-lg pl-4 pr-10 py-2.5 text-sm focus:ring-2 focus:ring-brand-500 focus:border-brand-500 transition-all">
-                  <option value="">All Wards</option>
-                  <option value="Ward A">Ward A</option>
-                  <option value="Ward B">Ward B</option>
-                  <option value="Ward C">Ward C</option>
-                  <option value="Ward D">Ward D</option>
-                  <option value="Ward E">Ward E</option>
-                  <option value="Central">Central</option>
+                  <option value="">All Local Areas</option>
+                  <optgroup label="Central / Old City Zone">
+                    <option value="Solapur City (Core)">Solapur City (Core)</option>
+                    <option value="Mangalwar Peth">Mangalwar Peth</option>
+                    <option value="Budhwar Peth">Budhwar Peth</option>
+                    <option value="Shukrawar Peth">Shukrawar Peth</option>
+                    <option value="Kasba Solapur">Kasba Solapur</option>
+                    <option value="Navi Peth">Navi Peth</option>
+                    <option value="Siddheshwar Peth">Siddheshwar Peth</option>
+                    <option value="Murarji Peth">Murarji Peth</option>
+                    <option value="Goldfinch Peth">Goldfinch Peth</option>
+                  </optgroup>
+                  <optgroup label="Central Residential Zone">
+                    <option value="Railway Lines Area">Railway Lines Area</option>
+                    <option value="Saat Rasta Area">Saat Rasta Area</option>
+                    <option value="Lashkar">Lashkar</option>
+                    <option value="Ujani Colony">Ujani Colony</option>
+                    <option value="Sakhar Peth">Sakhar Peth</option>
+                    <option value="Begum Peth">Begum Peth</option>
+                  </optgroup>
+                  <optgroup label="North Solapur Zone">
+                    <option value="Ashok Chowk">Ashok Chowk</option>
+                    <option value="Akkalkot Road Area">Akkalkot Road Area</option>
+                    <option value="Bale">Bale</option>
+                    <option value="Degaon">Degaon</option>
+                    <option value="Hipparga">Hipparga</option>
+                    <option value="Boramani">Boramani</option>
+                  </optgroup>
+                  <optgroup label="East Solapur / Industrial Zone">
+                    <option value="MIDC Solapur">MIDC Solapur</option>
+                    <option value="Hotgi Road Area">Hotgi Road Area</option>
+                    <option value="Konark Nagar">Konark Nagar</option>
+                    <option value="Datta Nagar">Datta Nagar</option>
+                    <option value="Saat Rasta East">Saat Rasta East</option>
+                    <option value="Railway Goods Yard Area">Railway Goods Yard Area</option>
+                  </optgroup>
+                  <optgroup label="South & South-West Zone">
+                    <option value="Vijapur Road Area">Vijapur Road Area</option>
+                    <option value="Jule Solapur">Jule Solapur</option>
+                    <option value="Jule MIDC">Jule MIDC</option>
+                    <option value="Walchand Nagar">Walchand Nagar</option>
+                    <option value="Majrewadi">Majrewadi</option>
+                    <option value="Kegaon">Kegaon</option>
+                  </optgroup>
+                  <optgroup label="West / Peripheral Development Zone">
+                    <option value="Kumbhari">Kumbhari</option>
+                    <option value="Shelgi">Shelgi</option>
+                    <option value="Dhotri">Dhotri</option>
+                    <option value="Antrolikar Nagar">Antrolikar Nagar</option>
+                    <option value="Sainath Nagar">Sainath Nagar</option>
+                  </optgroup>
                 </select>
                 <div class="absolute inset-y-0 right-0 pr-3 flex items-center pointer-events-none">
                   <svg class="h-4 w-4 text-slate-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
@@ -1675,12 +1866,12 @@
               </select>
               <select id="zoneFilter" class="border border-slate-300 rounded-lg px-3 py-2 text-sm focus:ring-brand-500 focus:border-brand-500">
                 <option value="all">All Zones</option>
-                <option value="core">🟢 Core/Old City</option>
-                <option value="central">🟠 Central & Residential</option>
-                <option value="north">🔵 North Solapur</option>
-                <option value="east">🔴 East/Industrial</option>
-                <option value="south">🟣 South & South-West</option>
-                <option value="west">🟤 West/Developing</option>
+                <option value="Central / Old City Zone">Central / Old City Zone</option>
+                <option value="Central Residential Zone">Central Residential Zone</option>
+                <option value="North Solapur Zone">North Solapur Zone</option>
+                <option value="East Solapur / Industrial Zone">East Solapur / Industrial Zone</option>
+                <option value="South & South-West Zone">South & South-West Zone</option>
+                <option value="West / Peripheral Development Zone">West / Peripheral Development Zone</option>
               </select>
             </div>
           </div>
@@ -1864,25 +2055,29 @@
                     </div>
                     <div class="grid grid-cols-1 md:grid-cols-3 gap-4">
                       <div>
-                        <label class="block text-sm font-medium text-slate-700 mb-1">Ward/Area</label>
-                        <select id="ward" name="ward" disabled class="w-full border border-slate-300 rounded-lg px-3 py-2 text-sm focus:ring-smc-primary focus:border-smc-primary disabled:bg-slate-50 disabled:text-slate-500">
-                          <option value="">Select Ward</option>
-                          <option value="core" <%= (citizen?.address?.ward === 'core') ? 'selected' : '' %>>Core/Old City</option>
-                          <option value="central" <%= (citizen?.address?.ward === 'central') ? 'selected' : '' %>>Central & Residential</option>
-                          <option value="north" <%= (citizen?.address?.ward === 'north') ? 'selected' : '' %>>North Solapur</option>
-                          <option value="east" <%= (citizen?.address?.ward === 'east') ? 'selected' : '' %>>East/Industrial</option>
-                          <option value="south" <%= (citizen?.address?.ward === 'south') ? 'selected' : '' %>>South & South-West</option>
-                          <option value="west" <%= (citizen?.address?.ward === 'west') ? 'selected' : '' %>>West/Developing</option>
+                        <label class="block text-sm font-medium text-slate-700 mb-1">Zone</label>
+                        <select id="zone" name="zone" disabled class="w-full border border-slate-300 rounded-lg px-3 py-2 text-sm focus:ring-smc-primary focus:border-smc-primary disabled:bg-slate-50 disabled:text-slate-500">
+                          <option value="">Select Zone</option>
+                          <option value="Central / Old City Zone" <%= (citizen?.zone === 'Central / Old City Zone') ? 'selected' : '' %>>Central / Old City Zone</option>
+                          <option value="Central Residential Zone" <%= (citizen?.zone === 'Central Residential Zone') ? 'selected' : '' %>>Central Residential Zone</option>
+                          <option value="North Solapur Zone" <%= (citizen?.zone === 'North Solapur Zone') ? 'selected' : '' %>>North Solapur Zone</option>
+                          <option value="East Solapur / Industrial Zone" <%= (citizen?.zone === 'East Solapur / Industrial Zone') ? 'selected' : '' %>>East Solapur / Industrial Zone</option>
+                          <option value="South & South-West Zone" <%= (citizen?.zone === 'South & South-West Zone') ? 'selected' : '' %>>South & South-West Zone</option>
+                          <option value="West / Peripheral Development Zone" <%= (citizen?.zone === 'West / Peripheral Development Zone') ? 'selected' : '' %>>West / Peripheral Development Zone</option>
                         </select>
+                      </div>
+                      <div>
+                        <label class="block text-sm font-medium text-slate-700 mb-1">Ward/Area</label>
+                        <input type="text" id="ward" name="ward" value="<%= citizen?.address?.ward || '' %>" disabled class="w-full border border-slate-300 rounded-lg px-3 py-2 text-sm focus:ring-smc-primary focus:border-smc-primary disabled:bg-slate-50 disabled:text-slate-500" placeholder="Local area or ward">
                       </div>
                       <div>
                         <label class="block text-sm font-medium text-slate-700 mb-1">Pin Code</label>
                         <input type="text" id="pinCode" name="pinCode" value="<%= citizen?.address?.pincode || '' %>" disabled class="w-full border border-slate-300 rounded-lg px-3 py-2 text-sm focus:ring-smc-primary focus:border-smc-primary disabled:bg-slate-50 disabled:text-slate-500" placeholder="413001">
                       </div>
-                      <div>
-                        <label class="block text-sm font-medium text-slate-700 mb-1">City</label>
-                        <input type="text" id="city" name="city" value="Solapur" disabled class="w-full border border-slate-300 rounded-lg px-3 py-2 text-sm bg-slate-50 text-slate-500" readonly>
-                      </div>
+                    </div>
+                    <div>
+                      <label class="block text-sm font-medium text-slate-700 mb-1">City</label>
+                      <input type="text" id="city" name="city" value="Solapur" disabled class="w-full border border-slate-300 rounded-lg px-3 py-2 text-sm bg-slate-50 text-slate-500" readonly>
                     </div>
                   </div>
                 </div>
